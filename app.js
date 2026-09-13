@@ -957,16 +957,36 @@ function renderProductsTable(list) {
 let allCategories = [];
 async function loadCategories() {
   const tbody = document.getElementById('categoriesTbody');
-  if (!tbody) return;
+  if (!tbody) { console.warn('No categoriesTbody element found'); return; }
   tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Loading categories…</td></tr>`;
+
+  let firestoreCats = {};
   try {
     const snap = await db.collection('categories').get();
-    allCategories = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderCategoriesTable(allCategories);
-    updateAdminStats();
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (d.hidden) return;
+      firestoreCats[doc.id] = { id: doc.id, ...d };
+    });
+    console.log('Firestore categories loaded:', Object.keys(firestoreCats));
   } catch (e) {
+    console.error('Firestore categories error:', e);
     tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Error: ${e.message}</td></tr>`;
+    return;
   }
+
+  // Make sure FALLBACK_CATS exists
+  if (typeof FALLBACK_CATS === 'undefined' || !FALLBACK_CATS) {
+    console.error('FALLBACK_CATS is not defined!');
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">FALLBACK_CATS missing in code</td></tr>`;
+    return;
+  }
+
+  const merged = { ...FALLBACK_CATS, ...firestoreCats };
+  console.log('Merged categories:', Object.keys(merged));
+  allCategories = Object.keys(merged).map(id => ({ id, ...merged[id] }));
+  renderCategoriesTable(allCategories);
+  updateAdminStats();
 }
 
 function renderCategoriesTable(list) {
