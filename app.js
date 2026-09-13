@@ -1,7 +1,14 @@
 /* ═══════════════════════════════════════════════════════════
    COOLISM — Complete App Logic (Single Theme, No Loyalty)
    ═══════════════════════════════════════════════════════════ */
-
+/* ═══════ FALLBACK CATEGORIES ═══════ */
+const FALLBACK_CATS = {
+  shirts:  { label:'Shirts',  gender:'unisex', desc:'Heavyweight tees & crisp cotton', img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80' },
+  pants:   { label:'Pants',   gender:'unisex', desc:'Tailored wide-leg & relaxed fits', img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80' },
+  jackets: { label:'Jackets', gender:'unisex', desc:'Leather, bombers & denim',         img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80' },
+  hoodies: { label:'Hoodies', gender:'unisex', desc:'Oversized & fleece-lined comfort', img:'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80' },
+  purses:  { label:'Purses',  gender:'women',  desc:'Leather & mini totes',             img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80' }
+};
 const firebaseConfig = {
   apiKey: "AIzaSyB9V9qVT1Tsje14gVs5r2q-f1IePFqFfTE",
   authDomain: "coolism-ff714.firebaseapp.com",
@@ -12,6 +19,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+
 const db = firebase.firestore();
 
 let PRODUCTS = [];
