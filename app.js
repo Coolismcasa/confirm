@@ -1015,7 +1015,7 @@ function renderCategoriesTable(list) {
   const tbody = document.getElementById('categoriesTbody');
   if (!tbody) return;
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No categories yet. Click "+ Add Category".</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No categories yet.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map((c, i) => {
@@ -1036,6 +1036,7 @@ function renderCategoriesTable(list) {
       </td>
     </tr>`;
   }).join('');
+
   tbody.querySelectorAll('[data-edit-cat]').forEach(b =>
     b.addEventListener('click', () => openCategoryForm(b.dataset.editCat)));
   tbody.querySelectorAll('[data-delete-cat]').forEach(b =>
@@ -1043,8 +1044,12 @@ function renderCategoriesTable(list) {
       const c = allCategories.find(x => x.id === b.dataset.deleteCat);
       if (!confirm(`Delete category "${c?.label || 'this'}"?`)) return;
       try {
-        await db.collection('categories').doc(b.dataset.deleteCat).delete();
+        const ref = db.collection('categories').doc(b.dataset.deleteCat);
+        const snap = await ref.get();
+        if (snap.exists) await ref.delete();
+        else await ref.set({ hidden: true, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
         toast('Category deleted');
+        await loadCatalog();
         loadCategories();
       } catch (e) { toast('Could not delete'); }
     }));
