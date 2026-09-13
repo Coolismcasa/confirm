@@ -989,6 +989,20 @@ async function loadCategories() {
   updateAdminStats();
 }
 
+  // Make sure FALLBACK_CATS exists
+  if (typeof FALLBACK_CATS === 'undefined' || !FALLBACK_CATS) {
+    console.error('FALLBACK_CATS is not defined!');
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">FALLBACK_CATS missing in code</td></tr>`;
+    return;
+  }
+
+  const merged = { ...FALLBACK_CATS, ...firestoreCats };
+  console.log('Merged categories:', Object.keys(merged));
+  allCategories = Object.keys(merged).map(id => ({ id, ...merged[id] }));
+  renderCategoriesTable(allCategories);
+  updateAdminStats();
+}
+
 function renderCategoriesTable(list) {
   const tbody = document.getElementById('categoriesTbody');
   if (!tbody) return;
