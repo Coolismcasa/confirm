@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>My Profile — COOLISM</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230B1A30'/%3E%3Ctext x='50' y='68' font-family='Georgia' font-size='60' font-weight='700' fill='%23F9F8F6' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@400;600;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="profile">
+
+<header class="nav-wrap" id="navWrap">
+  <div class="container nav">
+    <a href="index.html" class="logo"><span class="dot"></span>COOLISM</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="profile.html" class="active">Profile</a>
+      <a href="track.html">Track Order</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn-ghost" id="accountBtn">Login</button>
+      <a href="profile.html" class="icon-btn profile-icon" id="profileIcon" hidden aria-label="My Profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+      <button class="btn-ghost" id="logoutBtn" hidden>Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding-top:60px">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">My Account</p>
+        <h2 id="profileName">Loading…</h2>
+      </div>
+      <button class="btn btn-line" id="editProfileBtn">Edit Profile</button>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile-card">
+        <h3>Account Information</h3>
+        <div class="profile-row"><b>Full Name</b><span id="pf-name">—</span></div>
+        <div class="profile-row"><b>Email</b><span id="pf-email">—</span></div>
+        <div class="profile-row"><b>Phone</b><span id="pf-phone">—</span></div>
+        <div class="profile-row"><b>Sign-in Method</b><span id="pf-provider">—</span></div>
+        <div class="profile-row"><b>Member Since</b><span id="pf-created">—</span></div>
+      </div>
+      <div class="profile-card">
+        <h3>Default Shipping</h3>
+        <div class="profile-row"><b>Address</b><span id="pf-address">—</span></div>
+        <div class="profile-row"><b>City</b><span id="pf-city">—</span></div>
+        <div class="profile-row"><b>District</b><span id="pf-district">—</span></div>
+        <div class="profile-row"><b>Province</b><span id="pf-province">—</span></div>
+      </div>
+    </div>
+
+    <div class="sec-head" id="orders" style="margin-top:80px">
+      <div>
+        <p class="eyebrow">My Orders</p>
+        <h2>Order History</h2>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><b id="ordersCount">0</b><span>Orders</span></div>
+        <div class="stat-box"><b id="ordersTotal">Rs 0</b><span>Total Spent</span></div>
+      </div>
+    </div>
+
+    <div id="ordersContainer" class="orders-container">
+      <div class="table-empty">Loading orders…</div>
+    </div>
+
+    <div id="noAuth" class="access-msg" hidden>
+      ⚠️ Please <a href="index.html">log in</a> to view your profile.
+    </div>
+  </div>
+</section>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-backdrop" id="editModal">
+  <div class="modal">
+    <div class="modal-art">
+      <a href="index.html" class="logo"><span class="dot"></span>COOLISM</a>
+      <h3>Update your <em>details</em></h3>
+      <p>Keep your shipping information up to date.</p>
+    </div>
+    <div class="modal-panel">
+      <button class="modal-close" id="editClose"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <h2 class="panel-title">Edit Profile</h2>
+      <p class="panel-sub">Update your personal details.</p>
+      <form id="editForm" novalidate>
+        <div class="row-2">
+          <div class="field"><label>First Name</label><input id="ed-first" type="text" /></div>
+          <div class="field"><label>Last Name</label><input id="ed-last" type="text" /></div>
+        </div>
+        <div class="field"><label>Phone</label><input id="ed-phone" type="tel" /></div>
+        <div class="field"><label>Address</label><input id="ed-address" type="text" /></div>
+        <div class="row-2">
+          <div class="field"><label>City</label><input id="ed-city" type="text" /></div>
+          <div class="field"><label>District</label><input id="ed-district" type="text" /></div>
+        </div>
+        <div class="field">
+          <label>Province</label>
+          <select id="ed-province">
+            <option value="">Select…</option>
+            <option>Sindh</option><option>Punjab</option><option>Khyber Pakhtunkhwa</option>
+            <option>Balochistan</option><option>Gilgit-Baltistan</option>
+            <option>Azad Kashmir</option><option>Islamabad Capital Territory</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-silver">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-backdrop" id="orderDetailModal">
+  <div class="checkout-modal">
+    <div class="modal-panel" style="grid-column:1/-1">
+      <button class="modal-close" id="orderDetailClose"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <h2 class="panel-title" id="odTitle">Order Details</h2>
+      <p class="panel-sub" id="odSub">—</p>
+      <div id="odBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg">Done</span></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

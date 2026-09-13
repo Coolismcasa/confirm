@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard — Coolism Admin</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230B1A30'/%3E%3Ctext x='50' y='68' font-family='Georgia' font-size='60' font-weight='700' fill='%23F9F8F6' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;600;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="admin" data-admin="your-email@gmail.com">
+
+<header class="nav-wrap" id="navWrap">
+  <div class="container nav">
+    <a href="index.html" class="logo"><span class="dot"></span>COOLISM</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#" class="active">Dashboard</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn-ghost" id="accountBtn">Login</button>
+      <a href="profile.html" class="icon-btn profile-icon" id="profileIcon" hidden aria-label="My Profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding-top:50px">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Admin Panel</p>
+        <h2>Coolism Dashboard</h2>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><b id="productCount">0</b><span>Products</span></div>
+        <div class="stat-box"><b id="categoryCount">0</b><span>Categories</span></div>
+        <div class="stat-box"><b id="orderCount">0</b><span>Orders</span></div>
+        <div class="stat-box"><b id="userCount">0</b><span>Users</span></div>
+        <div class="stat-box"><b id="revenueTotal">Rs 0</b><span>Revenue</span></div>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="products">Products</button>
+      <button class="admin-tab" data-tab="categories">Categories</button>
+      <button class="admin-tab" data-tab="orders">Orders</button>
+      <button class="admin-tab" data-tab="users">Users</button>
+      <button class="admin-tab" data-tab="analytics">Analytics</button>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="admin-panel" id="panel-products">
+      <div class="table-toolbar">
+        <input type="text" id="productSearch" placeholder="Search products by name, SKU, category..." />
+        <button class="btn btn-silver" id="addProductBtn">+ Add Product</button>
+        <button class="btn btn-line" id="refreshProducts">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Image</th><th>Name</th><th>Gender</th><th>Category</th>
+              <th>Price</th><th>SKU</th><th>Stock</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productsTbody">
+            <tr><td colspan="9" class="table-empty">Loading products…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="admin-panel" id="panel-categories" hidden>
+      <div class="table-toolbar">
+        <input type="text" id="categorySearch" placeholder="Search categories..." />
+        <button class="btn btn-silver" id="addCategoryBtn">+ Add Category</button>
+        <button class="btn btn-line" id="refreshCategories">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Image</th><th>Name</th><th>Gender</th><th>Description</th><th>Products</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="categoriesTbody">
+            <tr><td colspan="7" class="table-empty">Loading categories…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="admin-panel" id="panel-orders" hidden>
+      <div class="table-toolbar">
+        <input type="text" id="orderSearch" placeholder="Search by order ID, name, phone, city..." />
+        <button class="btn btn-line" id="refreshOrders">Refresh</button>
+        <button class="btn btn-line" id="exportOrders">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Order ID</th><th>Date</th><th>Customer</th>
+              <th>Phone</th><th>City</th><th>Total</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTbody">
+            <tr><td colspan="9" class="table-empty">Loading orders…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="admin-panel" id="panel-users" hidden>
+      <div class="table-toolbar">
+        <input type="text" id="userSearch" placeholder="Search by email, name or phone..." />
+        <button class="btn btn-line" id="refreshUsers">Refresh</button>
+        <button class="btn btn-line" id="exportUsers">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Email</th><th>Name</th><th>Phone</th>
+              <th>City</th><th>Verified</th><th>Joined</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="usersTbody">
+            <tr><td colspan="8" class="table-empty">Loading users…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="admin-panel" id="panel-analytics" hidden>
+      <div class="analytics-grid" id="analyticsGrid"></div>
+    </div>
+
+    <div id="accessMsg" class="access-msg" hidden>
+      ⚠️ Admin access only. <a href="index.html">Go to homepage</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-backdrop" id="productModal">
+  <div class="product-modal">
+    <div class="modal-panel">
+      <button class="modal-close" id="productModalClose"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <h2 class="panel-title" id="productModalTitle">Add New Product</h2>
+      <p class="panel-sub" id="productModalSub">Fill in the details below</p>
+
+      <form id="productForm" novalidate>
+        <div class="form-section">
+          <p class="form-section-title">Basic Information</p>
+          <div class="field" data-field>
+            <label>Product Name *</label>
+            <input id="p-name" type="text" placeholder="e.g. Classic Navy Hoodie" />
+            <span class="msg">Required</span>
+          </div>
+          <div class="row-2">
+            <div class="field" data-field>
+              <label>Gender *</label>
+              <select id="p-gender">
+                <option value="">Select…</option>
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+              </select>
+              <span class="msg">Required</span>
+            </div>
+            <div class="field" data-field>
+              <label>Category *</label>
+              <select id="p-category"><option value="">Select category…</option></select>
+              <span class="msg">Required</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Pricing</p>
+          <div class="form-row-3">
+            <div class="field" data-field><label>Price (Rs) *</label><input id="p-price" type="number" min="0" placeholder="2490" /><span class="msg">Required</span></div>
+            <div class="field"><label>Old Price (optional)</label><input id="p-old" type="number" min="0" placeholder="3200" /></div>
+            <div class="field">
+              <label>Tag</label>
+              <select id="p-tag">
+                <option value="">None</option>
+                <option>New</option><option>Bestseller</option><option>Limited</option><option>Sale</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Product Images (Up to 3)</p>
+          <div class="img-slots">
+            <div class="img-slot">
+              <div class="img-slot-preview" id="prev-0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Image 1</span></div>
+              <input type="text" id="p-img1" placeholder="product-front.jpg" class="img-filename" data-slot="0" />
+            </div>
+            <div class="img-slot">
+              <div class="img-slot-preview" id="prev-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Image 2</span></div>
+              <input type="text" id="p-img2" placeholder="product-side.jpg" class="img-filename" data-slot="1" />
+            </div>
+            <div class="img-slot">
+              <div class="img-slot-preview" id="prev-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Image 3</span></div>
+              <input type="text" id="p-img3" placeholder="product-back.jpg" class="img-filename" data-slot="2" />
+            </div>
+          </div>
+          <p class="image-hint">💡 Type the filename (upload to your GitHub <code>images/</code> folder) or paste a full URL.</p>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Variants</p>
+          <div class="row-2">
+            <div class="field"><label>Sizes (comma-separated)</label><input id="p-sizes" type="text" placeholder="S, M, L, XL" value="S, M, L, XL" /></div>
+            <div class="field"><label>SKU</label><input id="p-sku" type="text" placeholder="CLM-HD-001" /></div>
+          </div>
+          <div class="field"><label>Colors (name:hex, comma-separated)</label><input id="p-colors" type="text" placeholder="Navy:#0B1A30, Charcoal:#3A3A3A" /></div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Description</p>
+          <div class="field"><label>Product Description</label><input id="p-desc" type="text" placeholder="A relaxed-fit hoodie..." /></div>
+          <div class="row-2">
+            <div class="field"><label>Fabric</label><input id="p-fabric" type="text" placeholder="100% Combed Cotton" /></div>
+            <div class="field"><label>Care</label><input id="p-care" type="text" placeholder="Machine wash cold" /></div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Inventory</p>
+          <div class="row-2">
+            <div class="field"><label>Stock Quantity</label><input id="p-stock" type="number" min="0" value="50" /></div>
+            <div class="field"><label>Low Stock Alert (below this)</label><input id="p-lowstock" type="number" min="0" value="5" /></div>
+          </div>
+          <label class="stock-toggle"><input type="checkbox" id="p-instock" checked /><span>Available for purchase</span></label>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:26px">
+          <button type="button" class="btn btn-line" id="productCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-silver" id="productSaveBtn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY MODAL -->
+<div class="modal-backdrop" id="categoryModal">
+  <div class="product-modal">
+    <div class="modal-panel">
+      <button class="modal-close" id="categoryModalClose"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <h2 class="panel-title" id="categoryModalTitle">Add New Category</h2>
+      <p class="panel-sub">A category needs a name, gender, image and description.</p>
+
+      <form id="categoryForm" novalidate>
+        <div class="form-section">
+          <div class="field" data-field>
+            <label>Category Name *</label>
+            <input id="c-label" type="text" placeholder="e.g. Shirts, Purses, Hoodies" />
+            <span class="msg">Required</span>
+          </div>
+          <div class="field" data-field>
+            <label>Gender *</label>
+            <select id="c-gender">
+              <option value="">Select…</option>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="unisex">Unisex (both)</option>
+            </select>
+            <span class="msg">Required</span>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <p class="form-section-title">Category Image *</p>
+          <div class="row-2">
+            <div>
+              <div class="cat-img-preview" id="catPreview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+            </div>
+            <div>
+              <div class="field" data-field>
+                <label>Image URL / Filename *</label>
+                <input id="c-img" type="text" placeholder="category.jpg or https://..." />
+                <span class="msg">Required</span>
+              </div>
+              <p class="image-hint">Type a filename (upload to <code>images/</code>) or paste a full URL.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="field" data-field>
+            <label>Description *</label>
+            <input id="c-desc" type="text" placeholder="Short description shown under the category" />
+            <span class="msg">Required</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:26px">
+          <button type="button" class="btn btn-line" id="categoryCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-silver" id="categorySaveBtn">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-backdrop" id="adminOrderModal">
+  <div class="checkout-modal">
+    <div class="modal-panel" style="grid-column:1/-1">
+      <button class="modal-close" id="adminOrderClose"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <h2 class="panel-title" id="aoTitle">Order Details</h2>
+      <p class="panel-sub" id="aoSub">—</p>
+      <div id="aoBody"></div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--line)">
+        <p class="form-section-title">Update Order Status</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+          <button class="action-btn" data-status="pending">Pending</button>
+          <button class="action-btn edit" data-status="confirmed">Confirmed</button>
+          <button class="action-btn edit" data-status="dispatched">Dispatched</button>
+          <button class="action-btn edit" data-status="delivered">Delivered</button>
+          <button class="action-btn delete" data-status="cancelled">Cancelled</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="modal-backdrop" id="adminUserModal">
+  <div class="checkout-modal">
+    <div class="modal-panel" style="grid-column:1/-1">
+      <button class="modal-close" id="adminUserClose"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <h2 class="panel-title" id="auTitle">User Details</h2>
+      <p class="panel-sub" id="auSub">—</p>
+      <div id="auBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg">Done</span></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
