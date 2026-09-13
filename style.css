@@ -1,5 +1,3 @@
-body{background:#FF00FF !important}
-*{margin:0;padding:0;box-sizing:border-box}
 
 /* ═══════════════════════════════════════════════════════════
    COOLISM — Royal Blue 60% · Off-White 35% · Silver 5%
@@ -11,12 +9,22 @@ body{background:#FF00FF !important}
   --bg-offwhite:#091428;
   --bg-hover:#142A50;
 
-  /* OFF-WHITE — 35% (text & light panels) */
+  /* OFF-WHITE — 35% (real off-white surfaces) */
+  --paper:#F7F4EE;
+  --paper-2:#EDE8DD;
+  --paper-3:#E4DDCC;
+
+  /* Text on royal blue */
   --navy-900:#F9F8F6;
   --navy-800:#E0E0E0;
   --text-main:#F1EFE9;
   --text-muted:#A8B4CC;
   --text-soft:#7A88A0;
+
+  /* Text on off-white surfaces */
+  --ink:#0B1A30;
+  --ink-muted:#4A5A76;
+  --ink-soft:#7A88A0;
 
   /* SILVER — 5% (accents) */
   --silver:#C0C0C0;
@@ -27,8 +35,11 @@ body{background:#FF00FF !important}
 
   --line:rgba(240,240,240,.10);
   --line-strong:rgba(240,240,240,.22);
+  --line-ink:rgba(11,26,48,.12);
+  --line-ink-strong:rgba(11,26,48,.25);
   --shadow:0 20px 50px -15px rgba(0,0,0,.5);
   --shadow-soft:0 12px 36px -14px rgba(0,0,0,.4);
+  --shadow-paper:0 18px 44px -18px rgba(11,26,48,.22);
   --ease:cubic-bezier(.22,.61,.36,1);
   --r-lg:22px;--r-md:14px;--r-sm:10px;
 }
