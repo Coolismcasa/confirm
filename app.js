@@ -1,14 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   COOLISM — Complete App Logic (Single Theme, No Loyalty)
+   COOLISM — Complete App Logic
+   Firebase Auth + Firestore + Products + Categories + Banner
    ═══════════════════════════════════════════════════════════ */
-/* ═══════ FALLBACK CATEGORIES ═══════ */
-const FALLBACK_CATS = {
-  shirts:  { label:'Shirts',  gender:'unisex', desc:'Heavyweight tees & crisp cotton', img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80' },
-  pants:   { label:'Pants',   gender:'unisex', desc:'Tailored wide-leg & relaxed fits', img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80' },
-  jackets: { label:'Jackets', gender:'unisex', desc:'Leather, bombers & denim',         img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80' },
-  hoodies: { label:'Hoodies', gender:'unisex', desc:'Oversized & fleece-lined comfort', img:'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80' },
-  purses:  { label:'Purses',  gender:'women',  desc:'Leather & mini totes',             img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80' }
-};
+
 const firebaseConfig = {
   apiKey: "AIzaSyB9V9qVT1Tsje14gVs5r2q-f1IePFqFfTE",
   authDomain: "coolism-ff714.firebaseapp.com",
@@ -19,14 +13,15 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
 const db = firebase.firestore();
 
+/* ═══════ STATE ═══════ */
 let PRODUCTS = [];
 let CATEGORIES = {};
 let cart = [];
 let allUsers = [];
 let allOrders = [];
+let allCategories = [];
 let currentDetail = { product:null, size:null, color:null, qty:1, images:[], index:0 };
 let currentFilter = 'all';
 let currentSort = 'featured';
@@ -41,7 +36,7 @@ const money = n => 'Rs ' + Number(n || 0).toLocaleString('en-PK');
 const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 const isPhone = v => /^03\d{9}$/.test(v.replace(/[\s-]/g, ''));
 
-/* ═══════ FALLBACK DATA ═══════ */
+/* ═══════ FALLBACK CATEGORIES ═══════ */
 const FALLBACK_CATS = {
   shirts:  { label:'Shirts',  gender:'unisex', desc:'Heavyweight tees & crisp cotton', img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80' },
   pants:   { label:'Pants',   gender:'unisex', desc:'Tailored wide-leg & relaxed fits', img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80' },
@@ -50,8 +45,8 @@ const FALLBACK_CATS = {
   purses:  { label:'Purses',  gender:'women',  desc:'Leather & mini totes',             img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80' }
 };
 
+/* ═══════ FALLBACK PRODUCTS ═══════ */
 const FALLBACK_PRODUCTS = [
-  // MEN
   { id:'m1', name:'Classic White Tee', gender:'men', cat:'shirts', price:2490, oldPrice:3200, tag:'New',
     images:['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=700&q=80'],
     desc:'A relaxed-fit tee cut from heavyweight 320 GSM cotton.',
@@ -108,8 +103,6 @@ const FALLBACK_PRODUCTS = [
     colors:[{name:'Navy',hex:'#131F3A'},{name:'Grey',hex:'#8A8A8A'}],
     fabric:'Cotton-poly blend', care:'Machine wash cold', sku:'CLM-M-HD-002',
     inStock:true, stock:35, lowStock:5 },
-
-  // WOMEN
   { id:'w1', name:'Silk Button Blouse', gender:'women', cat:'shirts', price:5490, oldPrice:6490, tag:'New',
     images:['https://images.unsplash.com/photo-1564257577032-6b3d3cfa1ce4?w=700&q=80'],
     desc:'Fluid silk blouse with a relaxed drape and pearl buttons.',
@@ -180,37 +173,12 @@ let toastTimer;
 function toast(msg) {
   const el = document.getElementById('toast');
   if (!el) return;
-  document.getElementById('toastMsg').textContent = msg;
+  const m = document.getElementById('toastMsg');
+  if (m) m.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
 }
-
-/* ═══════ SEASONAL BANNER ═══════ */
-(function initSeasonal() {
-  const banner = document.getElementById('seasonalBanner');
-  if (!banner) return;
-  if (localStorage.getItem('coolism_sb_dismissed') === '1') return;
-  const m = new Date().getMonth();
-  let t;
-  if (m >= 11 || m <= 1) t = { icon:'❄️', title:'Winter Drop 2026', sub:'Up to 30% off selected pieces' };
-  else if (m >= 2 && m <= 3) t = { icon:'🌸', title:'Spring Collection', sub:'Fresh arrivals just landed' };
-  else if (m >= 4 && m <= 6) t = { icon:'☀️', title:'Summer Essentials', sub:'Light linens & breathable cotton' };
-  else if (m >= 7 && m <= 8) t = { icon:'🌧️', title:'Monsoon Edit', sub:'Comfort meets Coolism' };
-  else t = { icon:'🍂', title:'Autumn Drop', sub:'Rich tones for cooler days' };
-  const i = document.getElementById('sbIcon');
-  const tt = document.getElementById('sbTitle');
-  const sb = document.getElementById('sbSub');
-  if (i) i.textContent = t.icon;
-  if (tt) tt.textContent = t.title;
-  if (sb) sb.textContent = t.sub;
-  banner.hidden = false;
-  const close = document.getElementById('sbClose');
-  if (close) close.addEventListener('click', () => {
-    banner.hidden = true;
-    localStorage.setItem('coolism_sb_dismissed', '1');
-  });
-})();
 
 /* ═══════ AUTH STATE ═══════ */
 const authReady = new Promise(resolve => {
@@ -266,48 +234,52 @@ async function saveUserToFirestore(user, extra = {}) {
 async function loadCatalog() {
   try {
     const snap = await db.collection('categories').get();
-    if (!snap.empty) {
-      const loaded = {};
-      snap.forEach(doc => {
-        const d = doc.data();
-        loaded[doc.id] = {
-          label: d.label || doc.id,
-          gender: d.gender || 'unisex',
-          desc: d.desc || d.sub || '',
-          img: d.img || ''
-        };
-      });
-      CATEGORIES = { ...FALLBACK_CATS, ...loaded };
-    } else {
-      CATEGORIES = { ...FALLBACK_CATS };
-    }
+    const loaded = {};
+    const hidden = [];
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (d.hidden) { hidden.push(doc.id); return; }
+      loaded[doc.id] = {
+        label: d.label || doc.id,
+        gender: d.gender || 'unisex',
+        desc: d.desc || d.sub || '',
+        img: d.img || ''
+      };
+    });
+    CATEGORIES = { ...FALLBACK_CATS, ...loaded };
+    hidden.forEach(id => { delete CATEGORIES[id]; });
   } catch (e) { CATEGORIES = { ...FALLBACK_CATS }; }
 
   try {
     const snap = await db.collection('products').get();
-    if (!snap.empty) {
-      PRODUCTS = snap.docs.map(doc => {
-        const d = doc.data();
-        return {
-          id: doc.id, name: d.name || '',
-          gender: d.gender || 'men',
-          cat: d.cat || 'shirts',
-          price: Number(d.price) || 0,
-          oldPrice: d.oldPrice ? Number(d.oldPrice) : null,
-          tag: d.tag || null,
-          images: Array.isArray(d.images) ? d.images : (d.img ? [d.img] : []),
-          desc: d.desc || '',
-          sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
-          colors: Array.isArray(d.colors) ? d.colors : [{ name:'Navy', hex:'#0B1A30' }],
-          fabric: d.fabric || '', care: d.care || '', sku: d.sku || '',
-          inStock: d.inStock !== false, stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
-          _ts: d.createdAt?.seconds || 0
-        };
+    const firestoreProducts = [];
+    const hiddenIds = [];
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (d.hidden) { hiddenIds.push(doc.id); return; }
+      firestoreProducts.push({
+        id: doc.id,
+        name: d.name || '', gender: d.gender || 'men', cat: d.cat || 'shirts',
+        price: Number(d.price) || 0,
+        oldPrice: d.oldPrice ? Number(d.oldPrice) : null,
+        tag: d.tag || null,
+        images: Array.isArray(d.images) ? d.images : (d.img ? [d.img] : []),
+        desc: d.desc || '',
+        sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
+        colors: Array.isArray(d.colors) ? d.colors : [{ name:'Navy', hex:'#0B1A30' }],
+        fabric: d.fabric || '', care: d.care || '', sku: d.sku || '',
+        inStock: d.inStock !== false,
+        stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
+        _ts: d.createdAt?.seconds || 0
       });
-    } else {
-      PRODUCTS = [ ...FALLBACK_PRODUCTS ];
-    }
-  } catch (e) { PRODUCTS = [ ...FALLBACK_PRODUCTS ]; }
+    });
+    const firestoreById = {};
+    firestoreProducts.forEach(p => { firestoreById[p.id] = p; });
+    const fallbacksKept = FALLBACK_PRODUCTS.filter(p => !firestoreById[p.id] && !hiddenIds.includes(p.id));
+    PRODUCTS = [...firestoreProducts, ...fallbacksKept];
+  } catch (e) {
+    PRODUCTS = [ ...FALLBACK_PRODUCTS ];
+  }
 }
 
 const getCat = k => CATEGORIES[k] || FALLBACK_CATS[k] || { label:k, gender:'unisex', desc:'', img:'' };
@@ -330,7 +302,7 @@ function cartVisual(p) {
   return `<div class="mini-letter" style="background:#333">${p.name.charAt(0)}</div>`;
 }
 
-/* ═══════ RENDER CATEGORY TILES (homepage) ═══════ */
+/* ═══════ RENDER CATEGORY TILES ═══════ */
 function renderCategoryTiles() {
   const grid = document.getElementById('catGrid');
   if (!grid) return;
@@ -388,6 +360,14 @@ function renderProducts(filter = 'all', sortMode = 'featured') {
   grid.innerHTML = list.map(productCardHTML).join('');
 }
 
+/* ═══════ HOME FILTER CHIPS ═══════ */
+function renderFiltersHome() {
+  const el = document.getElementById('filters');
+  if (!el) return;
+  el.innerHTML = `<button class="chip active" data-filter="all">All</button>` +
+    Object.keys(CATEGORIES).map(k => `<button class="chip" data-filter="${k}">${CATEGORIES[k].label}</button>`).join('');
+}
+
 /* ═══════ SHOP PAGE ═══════ */
 function getUrlParam(key) {
   return new URLSearchParams(window.location.search).get(key);
@@ -424,7 +404,6 @@ function renderShopPage() {
     if (eyebrow) eyebrow.textContent = 'Browse All';
   }
 
-  // Filter chips — show categories for current gender
   const filters = document.getElementById('filters');
   if (filters) {
     const catKeys = Object.keys(CATEGORIES).filter(k => {
@@ -436,7 +415,6 @@ function renderShopPage() {
       catKeys.map(k => `<button class="chip ${shopCat===k?'active':''}" data-filter="${k}">${CATEGORIES[k].label}</button>`).join('');
   }
 
-  // Filter products
   let list = PRODUCTS;
   if (shopGender) list = list.filter(p => p.gender === shopGender);
   if (shopCat) list = list.filter(p => p.cat === shopCat);
@@ -456,7 +434,6 @@ function renderShopPage() {
     }
   }
 
-  // Filter chip clicks
   if (filters) filters.addEventListener('click', e => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
@@ -621,7 +598,7 @@ function showImageIndex(idx) {
     t.classList.toggle('active', i === currentDetail.index));
 }
 
-/* ═══════ SHIPPING / CHECKOUT ═══════ */
+/* ═══════ CHECKOUT ═══════ */
 function calcShipping(subtotal, city, district, province) {
   if (subtotal >= SHIPPING_RATES.freeThreshold) return 0;
   const c = (city || '').toLowerCase().trim();
@@ -722,7 +699,7 @@ async function placeOrder(user, formData) {
   }
 }
 
-/* ═══════ PROFILE PAGE ═══════ */
+/* ═══════ PROFILE ═══════ */
 async function loadProfile(user) {
   const noAuth = document.getElementById('noAuth');
   if (!user) { if (noAuth) noAuth.hidden = false; return; }
@@ -846,8 +823,8 @@ function renderTrackResult(order) {
 
   c.innerHTML = `<div class="track-result">
     <h3 style="margin-bottom:8px">Order ${order.orderId}</h3>
-    <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:22px">Placed on ${date}</p>
-    ${cancelled ? `<div style="text-align:center;padding:24px;background:rgba(224,106,106,.15);border-radius:14px;color:#E06A6A;font-weight:700">This order was cancelled</div>` :
+    <p style="color:var(--ink-muted);font-size:.9rem;margin-bottom:22px">Placed on ${date}</p>
+    ${cancelled ? `<div style="text-align:center;padding:24px;background:rgba(194,74,74,.15);border-radius:14px;color:#C24A4A;font-weight:700">This order was cancelled</div>` :
       `<div class="track-steps">
         ${steps.map((s,i) => {
           const cls = i <= idx ? (i === idx ? 'current' : 'done') : '';
@@ -953,19 +930,23 @@ function renderProductsTable(list) {
     b.addEventListener('click', async () => {
       const p = PRODUCTS.find(x => x.id === b.dataset.deleteProduct);
       if (!confirm(`Delete "${p?.name || 'this product'}"?`)) return;
+      const id = b.dataset.deleteProduct;
       try {
-        await db.collection('products').doc(b.dataset.deleteProduct).delete();
+        const ref = db.collection('products').doc(id);
+        const snap = await ref.get();
+        if (snap.exists) await ref.delete();
+        else await ref.set({ hidden: true, name: p?.name || '', updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
         toast('Product deleted');
+        await loadCatalog();
         loadProducts();
-      } catch (e) { toast('Could not delete'); }
+      } catch (e) { toast('Could not delete: ' + (e.code || e.message)); }
     }));
 }
 
 /* ═══════ ADMIN — CATEGORIES ═══════ */
-let allCategories = [];
 async function loadCategories() {
   const tbody = document.getElementById('categoriesTbody');
-  if (!tbody) { console.warn('No categoriesTbody element found'); return; }
+  if (!tbody) { console.warn('categoriesTbody missing'); return; }
   tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Loading categories…</td></tr>`;
 
   let firestoreCats = {};
@@ -976,36 +957,13 @@ async function loadCategories() {
       if (d.hidden) return;
       firestoreCats[doc.id] = { id: doc.id, ...d };
     });
-    console.log('Firestore categories loaded:', Object.keys(firestoreCats));
   } catch (e) {
     console.error('Firestore categories error:', e);
     tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Error: ${e.message}</td></tr>`;
     return;
   }
 
-  // Make sure FALLBACK_CATS exists
-  if (typeof FALLBACK_CATS === 'undefined' || !FALLBACK_CATS) {
-    console.error('FALLBACK_CATS is not defined!');
-    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">FALLBACK_CATS missing in code</td></tr>`;
-    return;
-  }
-
   const merged = { ...FALLBACK_CATS, ...firestoreCats };
-  console.log('Merged categories:', Object.keys(merged));
-  allCategories = Object.keys(merged).map(id => ({ id, ...merged[id] }));
-  renderCategoriesTable(allCategories);
-  updateAdminStats();
-}
-
-  // Make sure FALLBACK_CATS exists
-  if (typeof FALLBACK_CATS === 'undefined' || !FALLBACK_CATS) {
-    console.error('FALLBACK_CATS is not defined!');
-    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">FALLBACK_CATS missing in code</td></tr>`;
-    return;
-  }
-
-  const merged = { ...FALLBACK_CATS, ...firestoreCats };
-  console.log('Merged categories:', Object.keys(merged));
   allCategories = Object.keys(merged).map(id => ({ id, ...merged[id] }));
   renderCategoriesTable(allCategories);
   updateAdminStats();
@@ -1015,7 +973,7 @@ function renderCategoriesTable(list) {
   const tbody = document.getElementById('categoriesTbody');
   if (!tbody) return;
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No categories yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No categories yet. Click "+ Add Category".</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map((c, i) => {
@@ -1039,6 +997,7 @@ function renderCategoriesTable(list) {
 
   tbody.querySelectorAll('[data-edit-cat]').forEach(b =>
     b.addEventListener('click', () => openCategoryForm(b.dataset.editCat)));
+
   tbody.querySelectorAll('[data-delete-cat]').forEach(b =>
     b.addEventListener('click', async () => {
       const c = allCategories.find(x => x.id === b.dataset.deleteCat);
@@ -1051,7 +1010,7 @@ function renderCategoriesTable(list) {
         toast('Category deleted');
         await loadCatalog();
         loadCategories();
-      } catch (e) { toast('Could not delete'); }
+      } catch (e) { toast('Could not delete: ' + (e.code || e.message)); }
     }));
 }
 
@@ -1062,7 +1021,6 @@ function openCategoryForm(id) {
   form.reset();
   document.getElementById('categoryModalTitle').textContent = id ? 'Edit Category' : 'Add New Category';
 
-  // Reset preview
   const prev = document.getElementById('catPreview');
   if (prev) {
     prev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
@@ -1076,9 +1034,9 @@ function openCategoryForm(id) {
       document.getElementById('c-gender').value = c.gender || 'unisex';
       document.getElementById('c-img').value = c.img || '';
       document.getElementById('c-desc').value = c.desc || c.sub || '';
-      if (c.img) {
-        const pv = document.getElementById('catPreview');
-        if (pv) { pv.innerHTML = `<img src="${c.img}" alt="Preview">`; pv.classList.add('has-image'); }
+      if (c.img && prev) {
+        prev.innerHTML = `<img src="${c.img}" alt="Preview">`;
+        prev.classList.add('has-image');
       }
     }
     form.dataset.editId = id;
@@ -1104,17 +1062,16 @@ async function saveCategory(e) {
 
   const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'images/';
   const img = imgRaw.startsWith('http') ? imgRaw : baseUrl + imgRaw;
-
   const slug = editId || label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   try {
     await db.collection('categories').doc(slug).set({
       label, gender, img, desc,
+      hidden: false,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
     toast(editId ? 'Category updated' : 'Category created');
     document.getElementById('categoryModal').classList.remove('show');
-    // Refresh both categories and the CATEGORIES global map
     await loadCatalog();
     loadCategories();
   } catch (e) {
@@ -1123,7 +1080,7 @@ async function saveCategory(e) {
   }
 }
 
-/* ═══════ PRODUCT FORM ═══════ */
+/* ═══════ ADMIN — PRODUCT FORM ═══════ */
 function fillCategoryDropdown() {
   const sel = document.getElementById('p-category');
   if (!sel) return;
@@ -1404,7 +1361,7 @@ function showAdminUser(uid) {
   const uo = allOrders.filter(o => o.uid === uid);
   const oh = uo.length
     ? uo.map(o => `<div class="order-item"><div><div class="nm">${o.orderId} · ${money(o.total)}</div><div class="vr">${o.itemCount||0} items · ${o.city||'—'}</div><div class="qt">${o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString() : '—'}</div></div><div><span class="${o.status==='delivered'?'badge-yes':'badge-info'}">${o.status||'pending'}</span></div></div>`).join('')
-    : `<div style="text-align:center;padding:30px;color:var(--text-muted);font-style:italic;font-size:.9rem">No orders yet</div>`;
+    : `<div style="text-align:center;padding:30px;color:var(--ink-muted);font-style:italic;font-size:.9rem">No orders yet</div>`;
   document.getElementById('auBody').innerHTML = `
     <div class="order-detail-block"><h4>User Information</h4>
       <div class="row"><b>Name</b><span>${n}</span></div>
@@ -1431,7 +1388,7 @@ function updateAdminStats() {
   if (rt) rt.textContent = money(allOrders.reduce((s,o) => s + (o.total||0), 0));
 }
 
-/* ═══════ ANALYTICS ═══════ */
+/* ═══════ ADMIN — ANALYTICS ═══════ */
 function renderAnalytics() {
   const grid = document.getElementById('analyticsGrid');
   if (!grid) return;
@@ -1467,19 +1424,19 @@ function renderAnalytics() {
     <div class="analytics-card">
       <h3>Key Metrics</h3>
       <p class="a-sub">Overall performance</p>
-      <div class="stat-box" style="width:100%;margin-bottom:12px;border-color:var(--line)"><b>${allOrders.length}</b><span>Total Orders</span></div>
-      <div class="stat-box" style="width:100%;margin-bottom:12px;border-color:var(--line)"><b>${money(avgOrder)}</b><span>Avg Order Value</span></div>
-      <div class="stat-box" style="width:100%;border-color:var(--line)"><b>${allUsers.length}</b><span>Total Users</span></div>
+      <div class="stat-box" style="width:100%;margin-bottom:12px"><b>${allOrders.length}</b><span>Total Orders</span></div>
+      <div class="stat-box" style="width:100%;margin-bottom:12px"><b>${money(avgOrder)}</b><span>Avg Order Value</span></div>
+      <div class="stat-box" style="width:100%"><b>${allUsers.length}</b><span>Total Users</span></div>
     </div>
     <div class="analytics-card">
       <h3>Top Products</h3>
       <p class="a-sub">By revenue</p>
-      <div class="top-list">${top.length ? top.map((t,i) => `<div class="top-item"><div class="top-rank">${i+1}</div><div><b>${t.name}</b><span>${t.qty} sold</span></div><div class="top-rev">${money(t.rev)}</div></div>`).join('') : '<div style="text-align:center;color:var(--text-soft);font-style:italic;padding:20px">No sales yet</div>'}</div>
+      <div class="top-list">${top.length ? top.map((t,i) => `<div class="top-item"><div class="top-rank">${i+1}</div><div><b>${t.name}</b><span>${t.qty} sold</span></div><div class="top-rev">${money(t.rev)}</div></div>`).join('') : '<div style="text-align:center;color:var(--ink-soft);font-style:italic;padding:20px">No sales yet</div>'}</div>
     </div>
     <div class="analytics-card">
       <h3>Top Cities</h3>
       <p class="a-sub">By order count</p>
-      <div class="top-list">${topCities.length ? topCities.map((c,i) => `<div class="top-item"><div class="top-rank">${i+1}</div><div><b>${c.city}</b><span>orders</span></div><div class="top-rev">${c.count}</div></div>`).join('') : '<div style="text-align:center;color:var(--text-soft);font-style:italic;padding:20px">No data yet</div>'}</div>
+      <div class="top-list">${topCities.length ? topCities.map((c,i) => `<div class="top-item"><div class="top-rank">${i+1}</div><div><b>${c.city}</b><span>orders</span></div><div class="top-rev">${c.count}</div></div>`).join('') : '<div style="text-align:center;color:var(--ink-soft);font-style:italic;padding:20px">No data yet</div>'}</div>
     </div>`;
 }
 
@@ -1509,6 +1466,7 @@ const page = document.body.dataset.page;
     renderCategoryTiles();
     renderFiltersHome();
     renderProducts('all', 'featured');
+
     const filters = document.getElementById('filters');
     if (filters) filters.addEventListener('click', e => {
       const chip = e.target.closest('.chip');
@@ -1518,6 +1476,7 @@ const page = document.body.dataset.page;
       currentFilter = chip.dataset.filter;
       renderProducts(currentFilter, currentSort);
     });
+
     const sortSel = document.getElementById('sortSelect');
     if (sortSel) sortSel.addEventListener('change', () => {
       currentSort = sortSel.value;
@@ -1547,19 +1506,6 @@ const page = document.body.dataset.page;
   if (page === 'profile') loadProfile(user);
 
   if (page === 'admin') {
-    const adminList = (document.body.dataset.admin || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-    if (!user) {
-      const msg = document.getElementById('accessMsg');
-      if (msg) msg.hidden = false;
-      setTimeout(() => { alert('Access denied. Please sign in with your admin account.'); window.location.href = 'index.html'; }, 400);
-      return;
-    }
-    const email = (user.email || '').toLowerCase();
-    if (!adminList.includes(email)) {
-      alert('Access denied. This dashboard is for admins only.');
-      window.location.href = 'index.html';
-      return;
-    }
     await loadProducts();
     await loadCategories();
     await loadOrders();
@@ -1567,14 +1513,7 @@ const page = document.body.dataset.page;
   }
 })();
 
-function renderFiltersHome() {
-  const el = document.getElementById('filters');
-  if (!el) return;
-  el.innerHTML = `<button class="chip active" data-filter="all">All</button>` +
-    Object.keys(CATEGORIES).map(k => `<button class="chip" data-filter="${k}">${CATEGORIES[k].label}</button>`).join('');
-}
-
-/* ═══════ GLOBAL EVENTS ═══════ */
+/* ═══════ GLOBAL CLICK EVENTS ═══════ */
 document.addEventListener('click', e => {
   if (e.target.closest('#cartBtn')) { openCart(); return; }
   if (e.target.closest('#cartClose')) { closeCart(); return; }
@@ -1764,7 +1703,6 @@ document.addEventListener('input', e => {
     }
   }
 
-  // Category image preview
   if (e.target.id === 'c-img') {
     const val = e.target.value.trim();
     const prev = document.getElementById('catPreview');
@@ -1871,7 +1809,7 @@ function switchTab(tab) {
   const sf = document.getElementById('signupForm'); if (sf) sf.hidden = tab !== 'signup';
 }
 
-/* ═══════ FORM HANDLERS ═══════ */
+/* ═══════ AUTH FORMS ═══════ */
 const loginForm = document.getElementById('loginForm');
 if (loginForm) loginForm.addEventListener('submit', async e => {
   e.preventDefault();
@@ -2039,7 +1977,7 @@ if (editForm) editForm.addEventListener('submit', async e => {
   } catch (err) { toast('Could not save'); }
 });
 
-/* ═══════ PRODUCT/CATEGORY FORM SUBMIT ═══════ */
+/* ═══════ FORM SUBMITS ═══════ */
 const productForm = document.getElementById('productForm');
 if (productForm) productForm.addEventListener('submit', saveProduct);
 const categoryForm = document.getElementById('categoryForm');
