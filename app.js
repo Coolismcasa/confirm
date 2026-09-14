@@ -1494,6 +1494,7 @@ const page = document.body.dataset.page;
       const params = new URLSearchParams(window.location.search);
       window.location.href = 'shop.html?' + params.toString();
     });
+     loadBanner();
   }
 
   if (page === 'track') {
