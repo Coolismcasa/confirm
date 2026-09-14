@@ -310,8 +310,10 @@ function renderCategoryTiles() {
   grid.innerHTML = keys.map(k => {
     const c = CATEGORIES[k];
     return `<a href="shop.html?cat=${k}" class="cat-tile">
-      <img class="cat-img" src="${c.img}" alt="${c.label}" loading="lazy" onerror="this.style.background='#1a2a50';this.style.display='none'">
-      <div class="cat-inner"><h3>${c.label}</h3><p>${c.desc || ''}</p></div>
+      <img class="cat-img" src="${c.img}" alt="${c.label}" loading="lazy" onerror="this.style.background='#EDE8DD';this.style.display='block'">
+      <div class="cat-inner">
+        <h3>${c.label}</h3>
+      </div>
     </a>`;
   }).join('');
 }
