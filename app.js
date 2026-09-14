@@ -1464,8 +1464,7 @@ const page = document.body.dataset.page;
   await loadCatalog();
   const user = await authReady;
 
-  if (page === 'home') {
-  await loadBanner();       // ← ADD THIS LINE
+  if (page === 'home') {    
   renderCategoryTiles();
   renderFiltersHome();
   renderProducts('all', 'featured');
