@@ -1465,9 +1465,10 @@ const page = document.body.dataset.page;
   const user = await authReady;
 
   if (page === 'home') {
-    renderCategoryTiles();
-    renderFiltersHome();
-    renderProducts('all', 'featured');
+  await loadBanner();       // ← ADD THIS LINE
+  renderCategoryTiles();
+  renderFiltersHome();
+  renderProducts('all', 'featured');
 
     const filters = document.getElementById('filters');
     if (filters) filters.addEventListener('click', e => {
