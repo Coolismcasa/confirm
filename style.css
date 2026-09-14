@@ -818,3 +818,65 @@ footer{background:var(--grey-900);color:#FFF;position:relative;z-index:2;margin-
   .cats { grid-template-columns: repeat(2, 1fr); }
   .cat-tile .cat-inner h3 { font-size: 0.72rem !important; letter-spacing: 0.12em; }
 }
+
+/* ═══════ SIMPLE HERO (no image) ═══════ */
+.hero-simple{
+  padding: clamp(70px, 10vw, 130px) 0 clamp(60px, 8vw, 100px);
+  text-align: center;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line-ink);
+}
+.hero-simple .container{
+  max-width: 900px;
+}
+.hero-simple .eyebrow{
+  margin-bottom: 20px;
+}
+.hero-slogan{
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+.hero-slogan em{
+  font-style: italic;
+  background: linear-gradient(120deg, #8A8A8A, #333333, #8A8A8A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-tagline{
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  color: var(--ink-muted);
+  font-weight: 300;
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto 38px;
+}
+.hero-buttons{
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-buttons .btn{
+  padding: 16px 46px;
+}
+
+@media (max-width: 620px){
+  .hero-simple{
+    padding: 60px 0 50px;
+  }
+  .hero-buttons{
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 20px;
+  }
+  .hero-buttons .btn{
+    justify-content: center;
+  }
+}
