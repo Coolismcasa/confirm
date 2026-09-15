@@ -880,3 +880,280 @@ footer{background:var(--grey-900);color:#FFF;position:relative;z-index:2;margin-
     justify-content: center;
   }
 }
+/* ═══════════════════════════════════════════════════════════
+   DESIGN POLISH — PREMIUM TOUCHES
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Global smoothness ─── */
+*{ -webkit-tap-highlight-color: transparent; }
+html{ scroll-behavior: smooth; }
+body{
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Better section rhythm ─── */
+.section{
+  padding: clamp(64px, 9vw, 128px) 0;
+}
+.sec-head{
+  margin-bottom: clamp(36px, 5vw, 64px);
+}
+
+/* ─── Refined eyebrow ─── */
+.eyebrow{
+  position: relative;
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.42em;
+}
+
+/* ─── Buttons — refined press states ─── */
+.btn{
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+.btn::before{
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transform: translate(-50%,-50%);
+  transition: width .5s ease, height .5s ease;
+  pointer-events: none;
+}
+.btn:active::before{
+  width: 300px;
+  height: 300px;
+  transition: 0s;
+}
+.btn:active{ transform: scale(0.97); }
+
+.btn-silver{
+  background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #000 100%);
+  color: #FFFFFF;
+  box-shadow: 0 12px 28px -10px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.btn-silver:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px -14px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+/* ─── Nav — refined underline ─── */
+.nav-links a{
+  transition: color .3s ease, letter-spacing .3s ease;
+}
+.nav-links a:hover{
+  letter-spacing: 0.32em;
+}
+.logo{
+  transition: opacity .3s ease;
+}
+.logo:hover{ opacity: 0.75; }
+
+/* ─── Product cards — buttery hover ─── */
+.card{
+  transition: transform .55s cubic-bezier(.22,.61,.36,1), box-shadow .55s ease, border-color .4s ease;
+  will-change: transform;
+}
+.card-media{
+  position: relative;
+  overflow: hidden;
+}
+.card-media::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.08));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.card:hover .card-media::after{ opacity: 1; }
+
+.card:hover .card-media img{
+  transform: scale(1.06);
+}
+.card .quick-add{
+  letter-spacing: 0.28em;
+  font-size: 0.72rem;
+  backdrop-filter: blur(12px);
+}
+
+/* ─── Category tiles — refined ─── */
+.cat-tile{
+  transition: transform .5s cubic-bezier(.22,.61,.36,1), border-color .35s, box-shadow .5s;
+  overflow: hidden;
+}
+.cat-tile .cat-img{
+  transition: transform 1s cubic-bezier(.22,.61,.36,1), filter .5s;
+}
+.cat-tile:hover .cat-img{
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+/* ─── Chips — refined ─── */
+.chip{
+  transition: all .32s cubic-bezier(.22,.61,.36,1);
+  position: relative;
+}
+.chip:hover{
+  transform: translateY(-2px);
+}
+.chip.active{
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,0.25);
+}
+
+/* ─── Sort select — refined ─── */
+.sort-select{
+  transition: all .3s ease;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236E6E6E' stroke-width='2' stroke-linecap='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  padding-right: 44px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.sort-select:hover{
+  border-color: var(--grey-400);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -8px rgba(0,0,0,0.15);
+}
+
+/* ─── Hero — refined typography ─── */
+.hero-slogan{
+  letter-spacing: -0.015em;
+}
+.hero-tagline{
+  letter-spacing: 0.005em;
+}
+.hero-buttons .btn{
+  min-width: 180px;
+  justify-content: center;
+}
+
+/* ─── Marquee topbar — smoother ─── */
+.marquee span{
+  transition: opacity .3s ease;
+}
+.topbar:hover .marquee{
+  animation-play-state: paused;
+}
+
+/* ─── Modal — refined entrance ─── */
+.modal-backdrop.show .modal,
+.modal-backdrop.show .detail-modal,
+.modal-backdrop.show .checkout-modal,
+.modal-backdrop.show .product-modal,
+.modal-backdrop.show .success-modal{
+  animation: modalIn .55s cubic-bezier(.22,.61,.36,1) both;
+}
+@keyframes modalIn{
+  from{ opacity: 0; transform: translateY(28px) scale(0.96); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ─── Inputs — refined focus ─── */
+.field input, .field select{
+  transition: all .3s cubic-bezier(.22,.61,.36,1);
+}
+.field input:focus, .field select:focus{
+  transform: translateY(-1px);
+}
+
+/* ─── Cart drawer — smoother slide ─── */
+.drawer{
+  transition: transform .55s cubic-bezier(.22,.61,.36,1);
+}
+
+/* ─── Toast — refined ─── */
+.toast{
+  transition: transform .55s cubic-bezier(.34,1.56,.64,1), opacity .4s;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ─── Footer — refined links ─── */
+.f-col a{
+  position: relative;
+  display: inline-block;
+}
+.f-col a::after{
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px;
+  height: 1px; width: 0;
+  background: currentColor;
+  transition: width .35s cubic-bezier(.22,.61,.36,1);
+}
+.f-col a:hover::after{
+  width: 100%;
+}
+
+/* ─── Scroll reveal — elements fade in as you scroll ─── */
+@media (prefers-reduced-motion: no-preference){
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .8s cubic-bezier(.22,.61,.36,1), transform .8s cubic-bezier(.22,.61,.36,1);
+  }
+  .reveal.in{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Custom scrollbar (desktop only) ─── */
+@media (min-width: 900px){
+  ::-webkit-scrollbar{ width: 10px; }
+  ::-webkit-scrollbar-track{ background: var(--paper-2); }
+  ::-webkit-scrollbar-thumb{
+    background: var(--grey-400);
+    border-radius: 10px;
+    border: 2px solid var(--paper-2);
+  }
+  ::-webkit-scrollbar-thumb:hover{
+    background: var(--grey-600);
+  }
+}
+
+/* ─── Better loading state for images ─── */
+img{
+  background-color: var(--paper-3);
+  background-image: linear-gradient(90deg, var(--paper-3) 0%, var(--paper-2) 50%, var(--paper-3) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+img[src]{ animation: none; }
+@keyframes shimmer{
+  from{ background-position: 200% 0; }
+  to{ background-position: -200% 0; }
+}
+
+/* ─── Better mobile experience ─── */
+@media (max-width: 620px){
+  .nav-links{ display: none; }
+  .logo{ font-size: 1.35rem; }
+  h2{ font-size: 1.75rem !important; }
+  .hero-slogan{ font-size: 2rem !important; }
+  .section{ padding: 60px 0; }
+  .btn{ padding: 14px 30px; font-size: 0.85rem; }
+  .btn-silver{ padding: 14px 30px; }
+}
+
+/* ─── Reduced motion accessibility ─── */
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
