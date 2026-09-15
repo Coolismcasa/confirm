@@ -119,12 +119,22 @@
   </div>
 </header>
 
-<!-- HERO BANNER -->
-<section class="hero-banner" id="heroBanner">
-  <a href="shop.html" class="hero-banner-link">
-    <img src="images/hero-banner.jpg" alt="Coolism — New Collection" class="hero-banner-img">
+<!-- HERO SLIDER -->
+<section class="hero-slider" id="heroSlider">
+  <a href="shop.html?gender=men" class="hero-slide active">
+    <img src="images/banner-men.jpg" alt="Coolism Men's Collection" class="hero-slide-img">
   </a>
+  <a href="shop.html?gender=women" class="hero-slide">
+    <img src="images/banner-women.jpg" alt="Coolism Women's Collection" class="hero-slide-img">
+  </a>
+
+  <!-- Dots indicator -->
+  <div class="hero-dots">
+    <button class="hero-dot active" data-slide="0" aria-label="Men's collection"></button>
+    <button class="hero-dot" data-slide="1" aria-label="Women's collection"></button>
+  </div>
 </section>
+  
 <!-- CATEGORIES -->
 <section class="section" id="collections">
   <div class="container">
