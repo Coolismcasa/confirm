@@ -1093,25 +1093,27 @@ function renderProductsTable(list) {
 /* ═══════ ADMIN — CATEGORIES ═══════ */
 async function loadCategories() {
   const tbody = document.getElementById('categoriesTbody');
-   hiddenIds.forEach(id => { delete merged[id]; });
-  if (!tbody) { console.warn('categoriesTbody missing'); return; }
+  if (!tbody) return;
   tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Loading categories…</td></tr>`;
 
   let firestoreCats = {};
-  const hiddenIds = [];
-
   try {
     const snap = await db.collection('categories').get();
     snap.forEach(doc => {
       const d = doc.data();
-      if (d.hidden) { hiddenIds.push(doc.id); return; }  // track hidden ones
+      if (d.hidden) return;
       firestoreCats[doc.id] = { id: doc.id, ...d };
     });
   } catch (e) {
-    console.error('Firestore categories error:', e);
     tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Error: ${e.message}</td></tr>`;
     return;
   }
+
+  const merged = { ...FALLBACK_CATS, ...firestoreCats };
+  allCategories = Object.keys(merged).map(id => ({ id, ...merged[id] }));
+  renderCategoriesTable(allCategories);
+  updateAdminStats();
+}
 
   // Merge fallbacks + Firestore
   const merged = { ...FALLBACK_CATS, ...firestoreCats };
