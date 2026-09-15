@@ -1093,6 +1093,7 @@ function renderProductsTable(list) {
 /* ═══════ ADMIN — CATEGORIES ═══════ */
 async function loadCategories() {
   const tbody = document.getElementById('categoriesTbody');
+   hiddenIds.forEach(id => { delete merged[id]; });
   if (!tbody) { console.warn('categoriesTbody missing'); return; }
   tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Loading categories…</td></tr>`;
 
