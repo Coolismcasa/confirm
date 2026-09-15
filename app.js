@@ -683,6 +683,14 @@ async function placeOrder(user, formData) {
         if (sn.exists) await ref.update({ stock: Math.max(0, (sn.data().stock ?? 0) - item.qty) });
       } catch (e) {}
     }
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'purchase', {
+        transaction_id: orderId,
+        value: total,
+        currency: 'PKR',
+        items: cart.map(i => ({ item_id: i.id, item_name: i.name, price: i.price, quantity: i.qty }))
+      });
+    }
     cart = [];
     saveCart();
     renderCart();
@@ -960,11 +968,12 @@ async function loadCategories() {
   tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Loading categories…</td></tr>`;
 
   let firestoreCats = {};
+  const hiddenIds = [];
   try {
     const snap = await db.collection('categories').get();
     snap.forEach(doc => {
       const d = doc.data();
-      if (d.hidden) return;
+      if (d.hidden) { hiddenIds.push(doc.id); return; }
       firestoreCats[doc.id] = { id: doc.id, ...d };
     });
   } catch (e) {
@@ -973,6 +982,8 @@ async function loadCategories() {
   }
 
   const merged = { ...FALLBACK_CATS, ...firestoreCats };
+  hiddenIds.forEach(id => { delete merged[id]; });
+
   allCategories = Object.keys(merged).map(id => ({ id, ...merged[id] }));
   renderCategoriesTable(allCategories);
   updateAdminStats();
@@ -1110,10 +1121,11 @@ function openProductForm(id) {
   document.getElementById('productModalTitle').textContent = id ? 'Edit Product' : 'Add New Product';
   document.getElementById('productModalSub').textContent = id ? 'Update the details below' : 'Fill in the details below';
 
-  [0,1,2].forEach(i => {
+  [0,1,2,3,4,5,6,7,8,9].forEach(i => {
     const prev = document.getElementById('prev-' + i);
     if (prev) {
-      prev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Image ${i+1}</span>`;
+      const req = i === 0 ? ' *' : '';
+      prev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Image ${i+1}${req}</span>`;
       prev.classList.remove('has-image');
     }
     const inp = document.getElementById('p-img' + (i+1));
@@ -1139,7 +1151,7 @@ function openProductForm(id) {
       document.getElementById('p-stock').value = p.stock ?? 50;
       document.getElementById('p-lowstock').value = p.lowStock ?? 5;
       const imgs = p.images || [];
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 10; i++) {
         const inp = document.getElementById('p-img' + (i+1));
         if (inp && imgs[i]) {
           const fn = imgs[i].includes('/') ? imgs[i].split('/').pop() : imgs[i];
@@ -1168,12 +1180,13 @@ function parseColors(str) {
 
 function parseImagesFromSlots(baseUrl) {
   const imgs = [];
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 10; i++) {
     const v = document.getElementById('p-img' + i)?.value.trim();
     if (v) imgs.push(v.startsWith('http') ? v : baseUrl + v);
   }
   return imgs;
 }
+
 async function saveProduct(e) {
   e.preventDefault();
   const form = document.getElementById('productForm');
@@ -1199,9 +1212,8 @@ async function saveProduct(e) {
   if (!gender) return toast('Select a gender');
   if (!cat) return toast('Select a category');
   if (!price || price < 0) return toast('Valid price required');
-   const baseUrlCheck = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'images/';
-const img1 = document.getElementById('p-img1').value.trim();
-if (!img1) return toast('Image 1 is required');
+  const img1 = document.getElementById('p-img1').value.trim();
+  if (!img1) return toast('Image 1 is required');
 
   const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'images/';
   const images = parseImagesFromSlots(baseUrl);
@@ -1709,7 +1721,9 @@ document.addEventListener('input', e => {
       prev.innerHTML = `<img src="${src}" alt="Preview" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23999%22%3E%3Crect x=%223%22 y=%223%22 width=%2218%22 height=%2218%22 rx=%222%22/%3E%3C/svg%3E'">`;
       prev.classList.add('has-image');
     } else {
-      prev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Image ${Number(slot)+1}</span>`;
+      const i = Number(slot);
+      const req = i === 0 ? ' *' : '';
+      prev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Image ${i+1}${req}</span>`;
       prev.classList.remove('has-image');
     }
   }
