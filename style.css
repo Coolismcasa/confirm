@@ -1157,74 +1157,75 @@ img[src]{ animation: none; }
     transition-duration: 0.01ms !important;
   }
 }
-/* ═══════ HERO TEXT LINKS (no buttons) ═══════ */
+/* ═══════ HERO TEXT LINKS — INLINE ═══════ */
 .hero-buttons{
   display: flex !important;
-  gap: 40px !important;
+  gap: 36px !important;
   justify-content: center !important;
-  flex-wrap: wrap !important;
-  margin-top: 8px;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  margin-top: 28px;
 }
 
 .hero-link{
   position: relative;
   display: inline-block;
   font-family: 'Jost', sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink);
   text-decoration: none;
-  padding: 6px 0 10px;
-  transition: color .3s ease, letter-spacing .3s ease;
+  padding: 4px 2px 8px;
+  white-space: nowrap;
+  transition: letter-spacing .3s ease;
 }
 .hero-link::after{
   content: '';
   position: absolute;
   left: 0;
-  bottom: 4px;
+  right: 0;
+  bottom: 0;
   height: 1.5px;
-  width: 100%;
   background: currentColor;
-  transform-origin: left center;
   transition: transform .45s cubic-bezier(.22,.61,.36,1);
+  transform-origin: center;
 }
 .hero-link:hover{
-  color: var(--ink);
   letter-spacing: 0.28em;
 }
-.hero-link:hover::after{
-  transform: scaleX(1.02);
+
+/* ═══════ MOBILE — SAME INLINE STYLE, JUST SMALLER ═══════ */
+@media (max-width: 620px){
+  .hero-buttons{
+    gap: 26px !important;
+    flex-wrap: nowrap !important;
+    margin-top: 22px;
+  }
+  .hero-link{
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    padding: 3px 2px 7px;
+  }
+  .hero-slogan{
+    font-size: 1.85rem !important;
+    margin-bottom: 6px !important;
+  }
 }
 
-/* ═══════ SMALLER MOBILE ICONS + TEXT ═══════ */
-@media (max-width: 620px){
-  /* Nav icons */
-  .icon-btn{
-    width: 36px !important;
-    height: 36px !important;
+@media (max-width: 380px){
+  .hero-buttons{
+    gap: 20px !important;
   }
-  .icon-btn svg{
-    width: 16px !important;
-    height: 16px !important;
+  .hero-link{
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
   }
-  .profile-icon{
-    width: 36px !important;
-    height: 36px !important;
+  .hero-slogan{
+    font-size: 1.6rem !important;
   }
-  .profile-icon svg{
-    width: 15px !important;
-    height: 15px !important;
-  }
-  .badge{
-    min-width: 15px !important;
-    height: 15px !important;
-    font-size: 0.56rem !important;
-    top: 2px !important;
-    right: 2px !important;
-  }
-
+}
   /* Logo */
   .logo{
     font-size: 1.15rem !important;
