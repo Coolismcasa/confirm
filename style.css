@@ -1356,4 +1356,37 @@ img[src]{ animation: none; }
   width: 100% !important;
   height: auto !important;
 }
+/* ═══════ HERO BANNER ═══════ */
+.hero-banner {
+  width: 100%;
+  overflow: hidden;
+  background: var(--paper, #F7F4EE);
+  border-bottom: 1px solid var(--line-ink, rgba(11,26,48,.12));
+}
 
+.hero-banner-link {
+  display: block;
+  width: 100%;
+  line-height: 0;
+  transition: opacity .3s ease;
+}
+
+.hero-banner-link:hover {
+  opacity: 0.95;
+}
+
+.hero-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Mobile tweak */
+@media (max-width: 768px) {
+  .hero-banner-img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center;
+  }
+}
