@@ -1356,3 +1356,40 @@ img[src]{ animation: none; }
   width: 100% !important;
   height: auto !important;
 }
+/* ═══════ CATEGORY TILES — BIGGER ═══════ */
+.cats {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 44px 32px !important;
+  max-width: 1200px !important;
+  margin-inline: auto !important;
+}
+
+.cat-tile .cat-img {
+  aspect-ratio: 1 / 1 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  background: #F2F2F2 !important;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 16px !important;
+}
+
+.cat-tile .cat-inner {
+  padding-top: 24px !important;
+}
+
+.cat-tile .cat-inner h3 {
+  font-size: 1.05rem !important;
+  letter-spacing: 0.2em !important;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .cats { grid-template-columns: repeat(2, 1fr) !important; gap: 32px 24px !important; }
+}
+
+/* Phone */
+@media (max-width: 560px) {
+  .cats { grid-template-columns: 1fr !important; gap: 28px !important; }
+  .cat-tile .cat-inner h3 { font-size: 0.95rem !important; }
+}
