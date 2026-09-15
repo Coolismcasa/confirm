@@ -2065,3 +2065,59 @@ document.addEventListener('keydown', e => {
     document.body.style.overflow = '';
   }
 });
+/* ═══════ HERO SLIDER (3s auto-rotate) ═══════ */
+(function initHeroSlider() {
+  const slider = document.getElementById('heroSlider');
+  if (!slider) return;
+
+  const slides = slider.querySelectorAll('.hero-slide');
+  const dots = slider.querySelectorAll('.hero-dot');
+  if (slides.length < 2) return;
+
+  let current = 0;
+  let timer = null;
+  const INTERVAL = 3000; // 3 seconds
+
+  function goTo(index) {
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    current = index;
+  }
+
+  function next() {
+    goTo((current + 1) % slides.length);
+  }
+
+  function start() {
+    stop();
+    timer = setInterval(next, INTERVAL);
+  }
+
+  function stop() {
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+
+  // Dot clicks
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      goTo(i);
+      start(); // restart timer
+    });
+  });
+
+  // Pause on hover (desktop)
+  slider.addEventListener('mouseenter', stop);
+  slider.addEventListener('mouseleave', start);
+
+  // Pause when tab hidden (saves battery)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else start();
+  });
+
+  // Start
+  start();
+})();
