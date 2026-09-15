@@ -1347,3 +1347,12 @@ img[src]{ animation: none; }
     letter-spacing: 0.16em;
   }
 }
+/* ═══════ CATEGORY IMAGE FIX — COVER ═══════ */
+.cat-tile .cat-img {
+  aspect-ratio: 1 / 1 !important;
+  object-fit: cover !important;
+  background: var(--paper-2) !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+}
