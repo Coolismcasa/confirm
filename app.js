@@ -2043,3 +2043,33 @@ document.addEventListener('keydown', e => {
     document.body.style.overflow = '';
   }
 });
+/* ═══════ SCROLL REVEAL ═══════ */
+(function initScrollReveal(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const targets = document.querySelectorAll('.sec-head, .card, .cat-tile, .news, .profile-card, .order-card, .analytics-card');
+  if (!targets.length) return;
+
+  targets.forEach(el => el.classList.add('reveal'));
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  targets.forEach(el => io.observe(el));
+})();
+/* ═══════ SMOOTH ANCHOR SCROLL ═══════ */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href^="#"]:not([href="#"])');
+  if (!a) return;
+  const id = a.getAttribute('href').slice(1);
+  const target = document.getElementById(id);
+  if (!target) return;
+  e.preventDefault();
+  const top = target.getBoundingClientRect().top + window.pageYOffset - 90;
+  window.scrollTo({ top, behavior: 'smooth' });
+});
