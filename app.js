@@ -1168,13 +1168,12 @@ function parseColors(str) {
 
 function parseImagesFromSlots(baseUrl) {
   const imgs = [];
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 5; i++) {
     const v = document.getElementById('p-img' + i)?.value.trim();
     if (v) imgs.push(v.startsWith('http') ? v : baseUrl + v);
   }
   return imgs;
 }
-
 async function saveProduct(e) {
   e.preventDefault();
   const form = document.getElementById('productForm');
@@ -1200,6 +1199,9 @@ async function saveProduct(e) {
   if (!gender) return toast('Select a gender');
   if (!cat) return toast('Select a category');
   if (!price || price < 0) return toast('Valid price required');
+   const baseUrlCheck = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'images/';
+const img1 = document.getElementById('p-img1').value.trim();
+if (!img1) return toast('Image 1 is required');
 
   const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'images/';
   const images = parseImagesFromSlots(baseUrl);
