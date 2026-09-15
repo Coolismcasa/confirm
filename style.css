@@ -1157,3 +1157,192 @@ img[src]{ animation: none; }
     transition-duration: 0.01ms !important;
   }
 }
+/* ═══════ HERO TEXT LINKS (no buttons) ═══════ */
+.hero-buttons{
+  display: flex !important;
+  gap: 40px !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  margin-top: 8px;
+}
+
+.hero-link{
+  position: relative;
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 0 10px;
+  transition: color .3s ease, letter-spacing .3s ease;
+}
+.hero-link::after{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  height: 1.5px;
+  width: 100%;
+  background: currentColor;
+  transform-origin: left center;
+  transition: transform .45s cubic-bezier(.22,.61,.36,1);
+}
+.hero-link:hover{
+  color: var(--ink);
+  letter-spacing: 0.28em;
+}
+.hero-link:hover::after{
+  transform: scaleX(1.02);
+}
+
+/* ═══════ SMALLER MOBILE ICONS + TEXT ═══════ */
+@media (max-width: 620px){
+  /* Nav icons */
+  .icon-btn{
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .icon-btn svg{
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .profile-icon{
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .profile-icon svg{
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .badge{
+    min-width: 15px !important;
+    height: 15px !important;
+    font-size: 0.56rem !important;
+    top: 2px !important;
+    right: 2px !important;
+  }
+
+  /* Logo */
+  .logo{
+    font-size: 1.15rem !important;
+    letter-spacing: 0.18em !important;
+  }
+  .logo .dot{
+    width: 5px !important;
+    height: 5px !important;
+    margin-top: -10px !important;
+  }
+
+  /* Nav */
+  .nav{
+    height: 62px !important;
+    gap: 12px !important;
+  }
+  .nav-actions{
+    gap: 2px !important;
+  }
+
+  /* Hero text links */
+  .hero-buttons{
+    gap: 28px !important;
+  }
+  .hero-link{
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+  }
+
+  /* Hero slogan smaller */
+  .hero-slogan{
+    font-size: 1.9rem !important;
+  }
+  .hero-tagline{
+    font-size: 0.9rem !important;
+  }
+
+  /* Toast smaller */
+  .toast{
+    font-size: 0.82rem !important;
+    padding: 12px 22px !important;
+  }
+
+  /* Drawer close button smaller */
+  .drawer-head .x{
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .drawer-head .x svg{
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .drawer-head h3{
+    font-size: 1.15rem !important;
+  }
+
+  /* Modal close button smaller */
+  .modal-close{
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .modal-close svg{
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .detail-close{
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .detail-close svg{
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  /* Product card text smaller */
+  .card-body{
+    padding: 16px 14px 20px !important;
+  }
+  .card-body h3{
+    font-size: 0.92rem !important;
+  }
+  .card .price .now{
+    font-size: 1.05rem !important;
+  }
+
+  /* Category name smaller */
+  .cat-tile .cat-inner h3{
+    font-size: 0.72rem !important;
+    letter-spacing: 0.12em !important;
+  }
+
+  /* Section headings smaller */
+  .sec-head h2{
+    font-size: 1.6rem !important;
+  }
+  .sec-head{
+    margin-bottom: 32px !important;
+  }
+}
+
+/* Even smaller for very small phones */
+@media (max-width: 380px){
+  .icon-btn{
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .icon-btn svg{
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .logo{
+    font-size: 1rem !important;
+  }
+  .hero-slogan{
+    font-size: 1.6rem !important;
+  }
+  .hero-link{
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+  }
+}
