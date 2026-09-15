@@ -873,27 +873,50 @@ async function loadProducts() {
   const tbody = document.getElementById('productsTbody');
   if (!tbody) return;
   tbody.innerHTML = `<tr><td colspan="9" class="table-empty">Loading products…</td></tr>`;
+
+  let firestoreProducts = [];
+  const hiddenIds = [];
+
   try {
     const snap = await db.collection('products').get();
-    PRODUCTS = snap.docs.map(doc => {
+    snap.forEach(doc => {
       const d = doc.data();
-      return {
-        id: doc.id, name: d.name||'', gender: d.gender||'men', cat: d.cat||'shirts',
-        price: Number(d.price)||0, oldPrice: d.oldPrice ? Number(d.oldPrice) : null,
-        tag: d.tag||null, images: Array.isArray(d.images) ? d.images : (d.img ? [d.img] : []),
-        desc: d.desc||'', sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
+      if (d.hidden) { hiddenIds.push(doc.id); return; }
+      firestoreProducts.push({
+        id: doc.id,
+        name: d.name || '',
+        gender: d.gender || 'men',
+        cat: d.cat || 'shirts',
+        price: Number(d.price) || 0,
+        oldPrice: d.oldPrice ? Number(d.oldPrice) : null,
+        tag: d.tag || null,
+        images: Array.isArray(d.images) ? d.images : (d.img ? [d.img] : []),
+        desc: d.desc || '',
+        sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
         colors: Array.isArray(d.colors) ? d.colors : [{ name:'Navy', hex:'#0B1A30' }],
-        fabric: d.fabric||'', care: d.care||'', sku: d.sku||'',
-        inStock: d.inStock !== false, stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
+        fabric: d.fabric || '', care: d.care || '', sku: d.sku || '',
+        inStock: d.inStock !== false,
+        stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
         _ts: d.createdAt?.seconds || 0
-      };
+      });
     });
-    if (!PRODUCTS.length) PRODUCTS = [ ...FALLBACK_PRODUCTS ];
-    renderProductsTable(PRODUCTS);
-    updateAdminStats();
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="9" class="table-empty">Error: ${e.message}</td></tr>`;
+    return;
   }
+
+  // Merge: Firestore products first, then fallbacks that aren't overridden or hidden
+  const firestoreById = {};
+  firestoreProducts.forEach(p => { firestoreById[p.id] = p; });
+
+  const fallbacksKept = FALLBACK_PRODUCTS.filter(p => 
+    !firestoreById[p.id] && !hiddenIds.includes(p.id)
+  );
+
+  PRODUCTS = [...firestoreProducts, ...fallbacksKept];
+
+  renderProductsTable(PRODUCTS);
+  updateAdminStats();
 }
 
 function renderProductsTable(list) {
