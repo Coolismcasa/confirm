@@ -121,17 +121,33 @@
 
 <!-- HERO SLIDER -->
 <section class="hero-slider" id="heroSlider">
-  <a href="shop.html?gender=men" class="hero-slide active">
-    <img src="images/banner-men.jpg" alt="Coolism Men's Collection" class="hero-slide-img">
-  </a>
-  <a href="shop.html?gender=women" class="hero-slide">
-    <img src="images/banner-women.jpg" alt="Coolism Women's Collection" class="hero-slide-img">
-  </a>
 
-  <!-- Dots indicator -->
+  <!-- MEN'S SLIDE -->
+  <div class="hero-slide active">
+    <picture>
+      <source media="(max-width: 768px)" srcset="images/banner-men-mobile.jpg">
+      <img src="images/banner-men.jpg" alt="Coolism Men's Collection" class="hero-slide-img">
+    </picture>
+    <a href="shop.html?gender=men" class="hero-cta-btn">
+      Shop Men's Collection
+    </a>
+  </div>
+
+  <!-- WOMEN'S SLIDE -->
+  <div class="hero-slide">
+    <picture>
+      <source media="(max-width: 768px)" srcset="images/banner-women-mobile.jpg">
+      <img src="images/banner-women.jpg" alt="Coolism Women's Collection" class="hero-slide-img">
+    </picture>
+    <a href="shop.html?gender=women" class="hero-cta-btn">
+      Shop Women's Collection
+    </a>
+  </div>
+
+  <!-- Dots -->
   <div class="hero-dots">
-    <button class="hero-dot active" data-slide="0" aria-label="Men's collection"></button>
-    <button class="hero-dot" data-slide="1" aria-label="Women's collection"></button>
+    <button class="hero-dot active" data-slide="0"></button>
+    <button class="hero-dot" data-slide="1"></button>
   </div>
 </section>
   
