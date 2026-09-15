@@ -1097,11 +1097,13 @@ async function loadCategories() {
   tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Loading categories…</td></tr>`;
 
   let firestoreCats = {};
+  const hiddenIds = [];
+
   try {
     const snap = await db.collection('categories').get();
     snap.forEach(doc => {
       const d = doc.data();
-      if (d.hidden) return;
+      if (d.hidden) { hiddenIds.push(doc.id); return; }  // track hidden ones
       firestoreCats[doc.id] = { id: doc.id, ...d };
     });
   } catch (e) {
@@ -1110,7 +1112,12 @@ async function loadCategories() {
     return;
   }
 
+  // Merge fallbacks + Firestore
   const merged = { ...FALLBACK_CATS, ...firestoreCats };
+
+  // ✂️ REMOVE any category that was marked hidden
+  hiddenIds.forEach(id => { delete merged[id]; });
+
   allCategories = Object.keys(merged).map(id => ({ id, ...merged[id] }));
   renderCategoriesTable(allCategories);
   updateAdminStats();
