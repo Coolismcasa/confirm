@@ -151,19 +151,65 @@
   </div>
 </section>
   
-<!-- CATEGORIES -->
-<section class="section" id="collections">
+<!-- SHOP BY GENDER -->
+<section class="section gender-section" id="collections">
   <div class="container">
     <div class="sec-head">
       <div>
         <p class="eyebrow">Curated Collections</p>
-        <h2>Shop by Category</h2>
+        <h2>Shop by Gender</h2>
       </div>
     </div>
-    <div class="cats" id="catGrid"></div>
+    <div class="gender-tiles">
+      <a href="shop.html?gender=men" class="gender-tile gender-tile-men">
+        <img src="images/gender-men.jpg" alt="Men's Collection" class="gender-tile-img" loading="lazy">
+        <div class="gender-tile-overlay"></div>
+        <div class="gender-tile-content">
+          <span class="gender-eyebrow">For Him</span>
+          <h3>MEN</h3>
+          <span class="gender-cta">Shop Now →</span>
+        </div>
+      </a>
+      <a href="shop.html?gender=women" class="gender-tile gender-tile-women">
+        <img src="images/gender-women.jpg" alt="Women's Collection" class="gender-tile-img" loading="lazy">
+        <div class="gender-tile-overlay"></div>
+        <div class="gender-tile-content">
+          <span class="gender-eyebrow">For Her</span>
+          <h3>WOMEN</h3>
+          <span class="gender-cta">Shop Now →</span>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
 
+<!-- FOR HIM -->
+<section class="section" id="for-him" style="padding-top:0">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">For Him</p>
+        <h2>Men's Categories</h2>
+      </div>
+      <a href="shop.html?gender=men" class="btn btn-line" style="padding:12px 28px;font-size:.82rem">View All →</a>
+    </div>
+    <div class="mini-cats" id="forHimGrid"></div>
+  </div>
+</section>
+
+<!-- FOR HER -->
+<section class="section" id="for-her" style="padding-top:0">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">For Her</p>
+        <h2>Women's Categories</h2>
+      </div>
+      <a href="shop.html?gender=women" class="btn btn-line" style="padding:12px 28px;font-size:.82rem">View All →</a>
+    </div>
+    <div class="mini-cats" id="forHerGrid"></div>
+  </div>
+</section>
 <!-- PRODUCTS -->
 <section class="section" id="shop" style="padding-top:0">
   <div class="container">
