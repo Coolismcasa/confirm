@@ -366,7 +366,46 @@ function renderFiltersHome() {
   el.innerHTML = `<button class="chip active" data-filter="all">All</button>` +
     Object.keys(CATEGORIES).map(k => `<button class="chip" data-filter="${k}">${CATEGORIES[k].label}</button>`).join('');
 }
+/* ═══════ RENDER GENDER CATEGORY SECTIONS ═══════ */
+function renderGenderSections() {
+  // For Him — show men's + unisex categories
+  const himGrid = document.getElementById('forHimGrid');
+  if (himGrid) {
+    const menCats = Object.keys(CATEGORIES).filter(k => {
+      const g = CATEGORIES[k].gender || 'unisex';
+      return g === 'men' || g === 'unisex';
+    }).slice(0, 4);
 
+    himGrid.innerHTML = menCats.map(k => {
+      const c = CATEGORIES[k];
+      return `<a href="shop.html?gender=men&cat=${k}" class="mini-cat-tile">
+        <div class="mini-cat-img">
+          <img src="${c.img}" alt="${c.label}" loading="lazy" onerror="this.style.background='#E8E8E8';this.style.display='block'">
+        </div>
+        <h4>${c.label}</h4>
+      </a>`;
+    }).join('');
+  }
+
+  // For Her — show women's + unisex categories
+  const herGrid = document.getElementById('forHerGrid');
+  if (herGrid) {
+    const womenCats = Object.keys(CATEGORIES).filter(k => {
+      const g = CATEGORIES[k].gender || 'unisex';
+      return g === 'women' || g === 'unisex';
+    }).slice(0, 4);
+
+    herGrid.innerHTML = womenCats.map(k => {
+      const c = CATEGORIES[k];
+      return `<a href="shop.html?gender=women&cat=${k}" class="mini-cat-tile">
+        <div class="mini-cat-img">
+          <img src="${c.img}" alt="${c.label}" loading="lazy" onerror="this.style.background='#E8E8E8';this.style.display='block'">
+        </div>
+        <h4>${c.label}</h4>
+      </a>`;
+    }).join('');
+  }
+}
 /* ═══════ SHOP PAGE ═══════ */
 function getUrlParam(key) {
   return new URLSearchParams(window.location.search).get(key);
