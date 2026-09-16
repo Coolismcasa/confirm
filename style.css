@@ -1800,3 +1800,225 @@ img[src]{ animation: none; }
     object-position: center;
   }
 }
+/* ═══════ HERO SLIDER — RESPONSIVE ═══════ */
+.hero-slider {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  overflow: hidden;
+  background: #1A1A1A;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+  display: block;
+  line-height: 0;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-slide picture {
+  display: block;
+  width: 100%;
+}
+
+.hero-slide-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  background: linear-gradient(140deg, #333, #1A1A1A);
+}
+
+/* Fallback for other images */
+.gender-tile-img,
+.mini-cat-img img,
+.card-media img {
+  background: linear-gradient(140deg, #333, #1A1A1A);
+}
+
+/* ═══════ CTA BUTTON ═══════ */
+.hero-cta-btn {
+  position: absolute;
+  bottom: 100px;
+  left: 80px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 42px;
+  background: linear-gradient(135deg, #2A2A2A, #0F0F0F);
+  color: #FFFFFF;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 99px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .92rem;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 14px 34px -12px rgba(0,0,0,.45);
+  transition: transform .35s ease, box-shadow .35s ease;
+  white-space: nowrap;
+}
+
+.hero-cta-btn::after {
+  content: '→';
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  margin-left: 4px;
+  transition: transform .35s ease;
+}
+
+.hero-cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 42px -12px rgba(0,0,0,.6);
+}
+
+.hero-cta-btn:hover::after {
+  transform: translateX(6px);
+}
+
+/* ═══════ DOTS ═══════ */
+.hero-dots {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: flex;
+  gap: 10px;
+}
+
+.hero-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  padding: 0;
+  transition: all .3s ease;
+}
+
+.hero-dot.active {
+  background: #FFFFFF;
+  width: 32px;
+  border-radius: 99px;
+}
+
+/* ═══════ 📱 MOBILE — PORTRAIT BANNERS ═══════ */
+@media (max-width: 768px) {
+  .hero-slider {
+    min-height: 125vw;
+    max-height: 135vw;
+  }
+
+  .hero-slide-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Move CTA to bottom-center on mobile */
+  .hero-cta-btn {
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 13px 28px;
+    font-size: .78rem;
+    letter-spacing: .14em;
+    max-width: 90%;
+  }
+
+  .hero-cta-btn:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  /* Dots repositioned */
+  .hero-dots {
+    bottom: 24px;
+  }
+
+  .hero-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .hero-dot.active {
+    width: 24px;
+  }
+}
+
+/* ═══════ 📱 SMALL PHONES ═══════ */
+@media (max-width: 480px) {
+  .hero-slider {
+    min-height: 130vw;
+  }
+
+  .hero-slide-img {
+    aspect-ratio: 4 / 5;
+  }
+
+  .hero-cta-btn {
+    bottom: 50px;
+    padding: 11px 24px;
+    font-size: .72rem;
+    letter-spacing: .12em;
+  }
+
+  .hero-dots {
+    bottom: 18px;
+  }
+}
+
+/* ═══════ BANNER SLOTS ON FRONTEND ═══════ */
+.banner-slot {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.banner-slot .site-banner-link {
+  display: block;
+  width: 100%;
+  transition: opacity .3s ease;
+}
+
+.banner-slot .site-banner-link:hover {
+  opacity: 0.95;
+}
+
+.banner-slot .site-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Other slots — mobile banner version */
+@media (max-width: 768px) {
+  .banner-slot .site-banner-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+}
