@@ -38,7 +38,7 @@ const money = n => 'Rs ' + Number(n || 0).toLocaleString('en-PK');
 const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 const isPhone = v => /^03\d{9}$/.test(v.replace(/[\s-]/g, ''));
 
-/* ═══════ HELPER — Build image URL ═══════ */
+/* ═══════ BUILD IMAGE URL ═══════ */
 function buildImageUrl(filenameOrUrl) {
   if (!filenameOrUrl) return '';
   const v = filenameOrUrl.trim();
@@ -49,12 +49,10 @@ function buildImageUrl(filenameOrUrl) {
 
 /* ═══════ FALLBACK CATEGORIES ═══════ */
 const FALLBACK_CATS = {
-  // MEN
   shirts:   { label:'Shirts',        gender:'men',   desc:'Casual & formal shirts',           img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80' },
   pants:    { label:'Pants',         gender:'men',   desc:'Chinos, cargos & formal',          img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80' },
   jackets:  { label:'Jackets',       gender:'men',   desc:'Bombers & leather',                img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80' },
   hoodies:  { label:'Hoodies',       gender:'men',   desc:'Oversized & fleece-lined comfort', img:'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80' },
-  // WOMEN
   suits2:   { label:'2-Piece Suits', gender:'women', desc:'Coordinated two-piece sets',       img:'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=80' },
   suits3:   { label:'3-Piece Suits', gender:'women', desc:'Embroidered three-piece',          img:'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80' },
   kurtis:   { label:'Kurtis',        gender:'women', desc:'Daily & formal kurtis',            img:'https://images.unsplash.com/photo-1583391733975-a6a3a6c6c4d1?w=800&q=80' },
@@ -346,13 +344,9 @@ function cartVisual(p) {
 
 /* ═══════ RENDER GENDER CATEGORY SECTIONS ═══════ */
 function renderGenderSections() {
-  // For Him — only men's categories
   const himGrid = document.getElementById('forHimGrid');
   if (himGrid) {
-    const menCats = Object.keys(CATEGORIES).filter(k => {
-      return (CATEGORIES[k].gender || 'men') === 'men';
-    }).slice(0, 4);
-
+    const menCats = Object.keys(CATEGORIES).filter(k => (CATEGORIES[k].gender || 'men') === 'men').slice(0, 4);
     himGrid.innerHTML = menCats.map(k => {
       const c = CATEGORIES[k];
       return `<a href="shop.html?gender=men&cat=${k}" class="mini-cat-tile">
@@ -364,13 +358,9 @@ function renderGenderSections() {
     }).join('');
   }
 
-  // For Her — only women's categories
   const herGrid = document.getElementById('forHerGrid');
   if (herGrid) {
-    const womenCats = Object.keys(CATEGORIES).filter(k => {
-      return (CATEGORIES[k].gender || 'women') === 'women';
-    }).slice(0, 4);
-
+    const womenCats = Object.keys(CATEGORIES).filter(k => (CATEGORIES[k].gender || 'women') === 'women').slice(0, 4);
     herGrid.innerHTML = womenCats.map(k => {
       const c = CATEGORIES[k];
       return `<a href="shop.html?gender=women&cat=${k}" class="mini-cat-tile">
@@ -1257,11 +1247,7 @@ async function saveBanner(e) {
   const active = document.getElementById('b-active').checked;
 
   const data = {
-    image: imageUrl,
-    link,
-    position,
-    order,
-    active,
+    image: imageUrl, link, position, order, active,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
 
@@ -1281,7 +1267,6 @@ async function saveBanner(e) {
   }
 }
 
-/* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
 /* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
 async function renderBannerSlots() {
   let banners = [];
@@ -1334,6 +1319,7 @@ async function renderBannerSlots() {
     }).join('');
   });
 }
+
 function initHeroSliderDynamic() {
   const slider = document.getElementById('heroSlider');
   if (!slider) return;
