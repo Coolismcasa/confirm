@@ -1979,13 +1979,11 @@ const page = document.body.dataset.page;
   const user = await authReady;
 
   if (page === 'home') {
-  await loadGenderSettings();
-  renderGenderTiles();
-  renderFeaturedMen();
-  renderFeaturedWomen();
-  await renderBannerSlots();
+  try { await loadGenderSettings(); renderGenderTiles(); } catch(e) { console.error('genders:', e); }
+  try { renderFeaturedMen(); } catch(e) { console.error('men:', e); }
+  try { renderFeaturedWomen(); } catch(e) { console.error('women:', e); }
+  try { await renderBannerSlots(); } catch(e) { console.error('banners:', e); }
 }
-
     const filters = document.getElementById('filters');
     if (filters) filters.addEventListener('click', e => {
       const chip = e.target.closest('.chip');
