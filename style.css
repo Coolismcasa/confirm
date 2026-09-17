@@ -2039,3 +2039,21 @@ img[src]{ animation: none; }
 #featured-women h2 {
   font-size: clamp(1.6rem, 3.5vw, 2.4rem);
 }
+/* ═══════ BANNER SLOT SPACING ═══════ */
+.banner-slot {
+  padding: 0;
+  margin: 0;
+}
+
+.banner-slot[data-banner-slot="home-before-men"],
+.banner-slot[data-banner-slot="home-after-men"],
+.banner-slot[data-banner-slot="home-before-women"],
+.banner-slot[data-banner-slot="home-after-women"] {
+  padding-top: clamp(20px, 4vw, 50px);
+  padding-bottom: clamp(20px, 4vw, 50px);
+}
+
+/* Remove top padding on the section that follows a filled banner slot */
+.banner-slot + .section {
+  padding-top: clamp(30px, 5vw, 60px);
+}
