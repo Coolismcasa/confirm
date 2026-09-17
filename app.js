@@ -1297,7 +1297,7 @@ async function renderBannerSlots() {
       .filter(b => b.active !== false);
   } catch (e) { return; }
 
-  // Hero slider
+  // ═══ Hero slider ═══
   const heroSlider = document.getElementById('heroSlider');
   if (heroSlider && banners.length) {
     const heroBanners = banners.filter(b => b.position === 'hero');
@@ -1318,14 +1318,32 @@ async function renderBannerSlots() {
     }
   }
 
-  // All other slots
-   ['before-categories','after-categories',
-   'home-before-men','home-after-men','home-before-women','home-after-women',
-   'after-products','before-footer',
-   'shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'].forEach(pos => {
+  // ═══ All other banner slots ═══
+  const SLOTS = [
+    'before-categories',
+    'after-categories',
+    'home-before-men',
+    'home-after-men',
+    'home-before-women',
+    'home-after-women',
+    'after-products',
+    'before-footer',
+    'shop-men-top',
+    'shop-men-mid',
+    'shop-women-top',
+    'shop-women-mid'
+  ];
+
+  SLOTS.forEach(pos => {
+    const slot = document.querySelector(`[data-banner-slot="${pos}"]`);
     if (!slot) return;
+
     const matching = banners.filter(b => b.position === pos);
-    if (!matching.length) { slot.style.display = 'none'; return; }
+    if (!matching.length) {
+      slot.style.display = 'none';
+      return;
+    }
+
     slot.style.display = 'block';
     slot.innerHTML = matching.map(b => {
       const mobileImage = b.image.replace(/\.(jpg|jpeg|png|webp)$/i, '-mobile.$1');
