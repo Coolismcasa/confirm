@@ -1288,6 +1288,7 @@ async function saveBanner(e) {
 }
 
 /* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
+/* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
 async function renderBannerSlots() {
   let banners = [];
   try {
@@ -1305,12 +1306,12 @@ async function renderBannerSlots() {
       heroSlider.innerHTML = heroBanners.map((b, i) => {
         const mobileImage = b.image.replace(/\.(jpg|jpeg|png|webp)$/i, '-mobile.$1');
         return `
-          <a href="${b.link||'#'}" class="hero-slide ${i === 0 ? 'active' : ''}">
+          <div class="hero-slide ${i === 0 ? 'active' : ''}">
             <picture>
               <source media="(max-width: 768px)" srcset="${mobileImage}">
               <img src="${b.image}" alt="Coolism" class="hero-slide-img" loading="eager">
             </picture>
-          </a>
+          </div>
         `;
       }).join('') + `
         <button class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Previous banner">
@@ -1327,6 +1328,9 @@ async function renderBannerSlots() {
           `<button class="hero-dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></button>`).join('')}</div>
       `;
       initHeroSliderDynamic();
+    }
+  }
+
   // ═══ All other banner slots ═══
   const SLOTS = [
     'before-categories',
@@ -1357,12 +1361,12 @@ async function renderBannerSlots() {
     slot.innerHTML = matching.map(b => {
       const mobileImage = b.image.replace(/\.(jpg|jpeg|png|webp)$/i, '-mobile.$1');
       return `
-        <a href="${b.link||'#'}" class="site-banner-link">
+        <div class="site-banner-link">
           <picture>
             <source media="(max-width: 768px)" srcset="${mobileImage}">
             <img src="${b.image}" alt="Coolism Banner" class="site-banner-img" loading="lazy">
           </picture>
-        </a>
+        </div>
       `;
     }).join('');
   });
