@@ -37,7 +37,132 @@ const SHIPPING_RATES = { sameCity:150, sameDistrict:200, sameProvince:250, other
 const money = n => 'Rs ' + Number(n || 0).toLocaleString('en-PK');
 const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 const isPhone = v => /^03\d{9}$/.test(v.replace(/[\s-]/g, ''));
+/* ═══════ GENDER SETTINGS ═══════ */
+let GENDER_SETTINGS = {
+  men:   { eyebrow:'For Him', title:'MEN',   img:'banner-men.jpg',   link:'shop.html?gender=men',   active:true, cats:[] },
+  women: { eyebrow:'For Her', title:'WOMEN', img:'banner-women.jpg', link:'shop.html?gender=women', active:true, cats:[] }
+};
 
+async function loadGenderSettings() {
+  try {
+    const snap = await db.collection('settings').doc('genders').get();
+    if (snap.exists) GENDER_SETTINGS = { ...GENDER_SETTINGS, ...snap.data() };
+  } catch (e) {}
+}
+
+function renderGenderTiles() {
+  const container = document.querySelector('.gender-tiles');
+  if (!container) return;
+  const tiles = [];
+  if (GENDER_SETTINGS.men?.active !== false) {
+    const m = GENDER_SETTINGS.men;
+    tiles.push(`
+      <a href="${m.link}" class="gender-tile gender-tile-men">
+        <img src="${buildImageUrl(m.img)}" alt="Men" class="gender-tile-img" loading="lazy">
+        <div class="gender-tile-overlay"></div>
+        <div class="gender-tile-content">
+          <span class="gender-eyebrow">${m.eyebrow}</span>
+          <h3>${m.title}</h3>
+          <span class="gender-cta">Shop Now →</span>
+        </div>
+      </a>
+    `);
+  }
+  if (GENDER_SETTINGS.women?.active !== false) {
+    const w = GENDER_SETTINGS.women;
+    tiles.push(`
+      <a href="${w.link}" class="gender-tile gender-tile-women">
+        <img src="${buildImageUrl(w.img)}" alt="Women" class="gender-tile-img" loading="lazy">
+        <div class="gender-tile-overlay"></div>
+        <div class="gender-tile-content">
+          <span class="gender-eyebrow">${w.eyebrow}</span>
+          <h3>${w.title}</h3>
+          <span class="gender-cta">Shop Now →</span>
+        </div>
+      </a>
+    `);
+  }
+  container.innerHTML = tiles.join('');
+}
+
+/* ═══════ ADMIN — GENDER SETTINGS FORM ═══════ */
+async function openGenderSettings() {
+  await loadGenderSettings();
+  const g = GENDER_SETTINGS;
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  set('g-men-eyebrow', g.men.eyebrow);
+  set('g-men-title', g.men.title);
+  set('g-men-img', g.men.img);
+  set('g-men-link', g.men.link);
+  document.getElementById('g-men-active').checked = g.men.active !== false;
+
+  set('g-women-eyebrow', g.women.eyebrow);
+  set('g-women-title', g.women.title);
+  set('g-women-img', g.women.img);
+  set('g-women-link', g.women.link);
+  document.getElementById('g-women-active').checked = g.women.active !== false;
+
+  // Previews
+  const mp = document.getElementById('g-men-preview');
+  if (mp && g.men.img) mp.innerHTML = `<img src="${buildImageUrl(g.men.img)}" style="width:100%;border-radius:10px" onerror="this.style.display='none'">`;
+  const wp = document.getElementById('g-women-preview');
+  if (wp && g.women.img) wp.innerHTML = `<img src="${buildImageUrl(g.women.img)}" style="width:100%;border-radius:10px" onerror="this.style.display='none'">`;
+
+  // Category checkboxes
+  const menList = document.getElementById('g-men-cats');
+  const womenList = document.getElementById('g-women-cats');
+  const allCats = Object.keys(CATEGORIES);
+
+  menList.innerHTML = allCats.map(k => `
+    <label class="stock-toggle" style="padding:10px">
+      <input type="checkbox" data-cat="${k}" data-gender="men" ${((g.men.cats||[]).length ? g.men.cats : allCats.filter(x=>CATEGORIES[x].gender==='men')).includes(k) ? 'checked' : ''} />
+      <span>${CATEGORIES[k].label}</span>
+    </label>
+  `).join('');
+
+  womenList.innerHTML = allCats.map(k => `
+    <label class="stock-toggle" style="padding:10px">
+      <input type="checkbox" data-cat="${k}" data-gender="women" ${((g.women.cats||[]).length ? g.women.cats : allCats.filter(x=>CATEGORIES[x].gender==='women')).includes(k) ? 'checked' : ''} />
+      <span>${CATEGORIES[k].label}</span>
+    </label>
+  `).join('');
+}
+
+async function saveGenderSettings(e) {
+  e.preventDefault();
+  const menCats = [...document.querySelectorAll('#g-men-cats input:checked')].map(i => i.dataset.cat);
+  const womenCats = [...document.querySelectorAll('#g-women-cats input:checked')].map(i => i.dataset.cat);
+
+  const data = {
+    men: {
+      eyebrow: document.getElementById('g-men-eyebrow').value.trim(),
+      title: document.getElementById('g-men-title').value.trim(),
+      img: document.getElementById('g-men-img').value.trim(),
+      link: document.getElementById('g-men-link').value.trim(),
+      active: document.getElementById('g-men-active').checked,
+      cats: menCats
+    },
+    women: {
+      eyebrow: document.getElementById('g-women-eyebrow').value.trim(),
+      title: document.getElementById('g-women-title').value.trim(),
+      img: document.getElementById('g-women-img').value.trim(),
+      link: document.getElementById('g-women-link').value.trim(),
+      active: document.getElementById('g-women-active').checked,
+      cats: womenCats
+    },
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  try {
+    await db.collection('settings').doc('genders').set(data);
+    GENDER_SETTINGS = data;
+    toast('Gender settings saved');
+    renderGenderTiles();
+  } catch (err) {
+    toast('Could not save: ' + err.message);
+  }
+}
 /* ═══════ BUILD IMAGE URL ═══════ */
 function buildImageUrl(filenameOrUrl) {
   if (!filenameOrUrl) return '';
@@ -1247,6 +1372,8 @@ function openBannerForm(id) {
       document.getElementById('b-position').value = b.position || 'hero';
       document.getElementById('b-order').value = b.order || 1;
       document.getElementById('b-active').checked = b.active !== false;
+      document.getElementById('b-show-pc').checked = b.showOnPc !== false;
+      document.getElementById('b-show-mobile').checked = b.showOnMobile !== false;
       if (b.image && prev) {
         prev.innerHTML = `<img src="${b.image}" style="width:100%;border-radius:12px" alt="Preview">`;
       }
@@ -1266,10 +1393,9 @@ async function saveBanner(e) {
   const order = Number(document.getElementById('b-order').value) || 1;
   const active = document.getElementById('b-active').checked;
 
-  const data = {
-    image: imageUrl, link, position, order, active,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  };
+  const showOnPc = document.getElementById('b-show-pc').checked;
+  const showOnMobile = document.getElementById('b-show-mobile').checked;
+  const data = { image: imageUrl, link, position, order, active, showOnPc, showOnMobile, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
 
   try {
     if (currentBannerId) {
@@ -1853,9 +1979,12 @@ const page = document.body.dataset.page;
   const user = await authReady;
 
   if (page === 'home') {
-    renderFeaturedMen();
-    renderFeaturedWomen();
-    await renderBannerSlots();
+  await loadGenderSettings();
+  renderGenderTiles();
+  renderFeaturedMen();
+  renderFeaturedWomen();
+  await renderBannerSlots();
+}
 
     const filters = document.getElementById('filters');
     if (filters) filters.addEventListener('click', e => {
@@ -1891,12 +2020,13 @@ const page = document.body.dataset.page;
   if (page === 'profile') loadProfile(user);
 
   if (page === 'admin') {
-    await loadProducts();
-    await loadCategories();
-    await loadBanners();
-    await loadOrders();
-    await loadUsers();
-  }
+  await loadProducts();
+  await loadCategories();
+  await loadBanners();
+  await loadOrders();
+  await loadUsers();
+  await openGenderSettings();
+}
 })();
 
 /* ═══════ GLOBAL CLICK EVENTS ═══════ */
@@ -2067,7 +2197,7 @@ document.addEventListener('click', e => {
     document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
     adminTab.classList.add('active');
     const w = adminTab.dataset.tab;
-    ['products','categories','banners','orders','users','analytics'].forEach(p => {
+     ['products','categories','banners','orders','users','analytics','genders'].forEach(p => {
       const el = document.getElementById('panel-' + p);
       if (el) el.hidden = w !== p;
     });
@@ -2456,3 +2586,6 @@ document.addEventListener('keydown', e => {
     document.body.style.overflow = '';
   }
 });
+const gendersForm = document.getElementById('gendersForm');
+if (gendersForm) gendersForm.addEventListener('submit', saveGenderSettings);
+if (document.getElementById('refreshGenders')) document.getElementById('refreshGenders').addEventListener('click', openGenderSettings);
