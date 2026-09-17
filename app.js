@@ -1312,12 +1312,21 @@ async function renderBannerSlots() {
             </picture>
           </a>
         `;
-      }).join('') + `<div class="hero-dots">${heroBanners.map((_, i) => 
-        `<button class="hero-dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></button>`).join('')}</div>`;
+      }).join('') + `
+        <button class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Previous banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+        </button>
+        <button class="hero-arrow hero-arrow-next" id="heroNext" aria-label="Next banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 6 6 6-6 6"/>
+          </svg>
+        </button>
+        <div class="hero-dots">${heroBanners.map((_, i) => 
+          `<button class="hero-dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></button>`).join('')}</div>
+      `;
       initHeroSliderDynamic();
-    }
-  }
-
   // ═══ All other banner slots ═══
   const SLOTS = [
     'before-categories',
