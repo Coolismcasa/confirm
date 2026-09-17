@@ -1282,6 +1282,7 @@ async function saveBanner(e) {
 }
 
 /* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
+/* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
 async function renderBannerSlots() {
   let banners = [];
   try {
@@ -1293,11 +1294,10 @@ async function renderBannerSlots() {
 
   // Hero slider
   const heroSlider = document.getElementById('heroSlider');
-  if (heroSlider) {
+  if (heroSlider && banners.length) {
     const heroBanners = banners.filter(b => b.position === 'hero');
     if (heroBanners.length) {
       heroSlider.innerHTML = heroBanners.map((b, i) => {
-        // Auto-generate mobile image name: banner-men.jpg → banner-men-mobile.jpg
         const mobileImage = b.image.replace(/\.(jpg|jpeg|png|webp)$/i, '-mobile.$1');
         return `
           <a href="${b.link||'#'}" class="hero-slide ${i === 0 ? 'active' : ''}">
@@ -1334,22 +1334,6 @@ async function renderBannerSlots() {
     }).join('');
   });
 }
-
-  // All other slots
-  ['before-categories','after-categories','after-products','before-footer',
-   'shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'].forEach(pos => {
-    const slot = document.querySelector(`[data-banner-slot="${pos}"]`);
-    if (!slot) return;
-    const matching = banners.filter(b => b.position === pos);
-    if (!matching.length) { slot.style.display = 'none'; return; }
-    slot.style.display = 'block';
-    slot.innerHTML = matching.map(b => `
-      <a href="${b.link||'#'}" class="site-banner-link">
-        <img src="${b.image}" alt="Coolism Banner" class="site-banner-img" loading="lazy">
-      </a>
-    `).join('');
-  });
-
 function initHeroSliderDynamic() {
   const slider = document.getElementById('heroSlider');
   if (!slider) return;
