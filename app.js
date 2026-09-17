@@ -2589,3 +2589,22 @@ document.addEventListener('keydown', e => {
 const gendersForm = document.getElementById('gendersForm');
 if (gendersForm) gendersForm.addEventListener('submit', saveGenderSettings);
 if (document.getElementById('refreshGenders')) document.getElementById('refreshGenders').addEventListener('click', openGenderSettings);
+/* ═══════ SCROLL REVEAL ═══════ */
+(function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  function observeAll() {
+    document.querySelectorAll('.card, .mini-cat-tile, .gender-tile, .analytics-card, .profile-card, .order-card').forEach(el => {
+      if (!el.classList.contains('in-view')) observer.observe(el);
+    });
+  }
+  window.addEventListener('load', () => setTimeout(observeAll, 500));
+  document.addEventListener('click', () => setTimeout(observeAll, 200));
+})();
