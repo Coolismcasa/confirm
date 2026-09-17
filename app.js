@@ -1349,7 +1349,6 @@ async function renderBannerSlots() {
       </a>
     `).join('');
   });
-}
 
 function initHeroSliderDynamic() {
   const slider = document.getElementById('heroSlider');
