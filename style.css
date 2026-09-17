@@ -2022,3 +2022,20 @@ img[src]{ animation: none; }
     object-fit: cover;
   }
 }
+/* ═══════ FEATURED SECTIONS ═══════ */
+#featured-men .sec-head,
+#featured-women .sec-head {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line-ink);
+}
+
+#featured-men .eyebrow,
+#featured-women .eyebrow {
+  color: var(--silver-dark);
+  letter-spacing: 0.4em;
+}
+
+#featured-men h2,
+#featured-women h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+}
