@@ -54,6 +54,7 @@
       <button class="admin-tab" data-tab="orders">Orders</button>
       <button class="admin-tab" data-tab="users">Users</button>
       <button class="admin-tab" data-tab="analytics">Analytics</button>
+      <button class="admin-tab" data-tab="genders">Genders</button>
     </div>
 
     <!-- PRODUCTS -->
@@ -175,7 +176,83 @@
     </div>
   </div>
 </section>
+<!-- GENDERS -->
+<div class="admin-panel" id="panel-genders" hidden>
+  <div class="table-toolbar">
+    <p class="panel-sub" style="margin:0">Control the two big homepage category tiles — Men and Women.</p>
+    <button class="btn btn-line" id="refreshGenders">Refresh</button>
+  </div>
 
+  <form id="gendersForm" class="product-modal" style="max-width:900px;padding:32px;border-radius:22px;max-height:none;position:relative">
+    <div class="row-2">
+      <!-- MEN CARD -->
+      <div class="form-section" style="border:1px solid var(--line-ink);padding:20px;border-radius:14px">
+        <p class="form-section-title">MEN'S TILE</p>
+
+        <div class="field">
+          <label>Eyebrow (small text)</label>
+          <input id="g-men-eyebrow" type="text" value="For Him" />
+        </div>
+        <div class="field">
+          <label>Title</label>
+          <input id="g-men-title" type="text" value="MEN" />
+        </div>
+        <div class="field">
+          <label>Tile Image (filename)</label>
+          <input id="g-men-img" type="text" placeholder="banner-men.jpg" />
+        </div>
+        <div class="field">
+          <label>Link</label>
+          <input id="g-men-link" type="text" value="shop.html?gender=men" />
+        </div>
+        <label class="stock-toggle">
+          <input type="checkbox" id="g-men-active" checked />
+          <span>Show Men's tile on homepage</span>
+        </label>
+
+        <div id="g-men-preview" style="margin-top:14px"></div>
+
+        <p class="form-section-title" style="margin-top:20px">Categories shown under Men</p>
+        <div id="g-men-cats" style="display:grid;gap:8px"></div>
+      </div>
+
+      <!-- WOMEN CARD -->
+      <div class="form-section" style="border:1px solid var(--line-ink);padding:20px;border-radius:14px">
+        <p class="form-section-title">WOMEN'S TILE</p>
+
+        <div class="field">
+          <label>Eyebrow (small text)</label>
+          <input id="g-women-eyebrow" type="text" value="For Her" />
+        </div>
+        <div class="field">
+          <label>Title</label>
+          <input id="g-women-title" type="text" value="WOMEN" />
+        </div>
+        <div class="field">
+          <label>Tile Image (filename)</label>
+          <input id="g-women-img" type="text" placeholder="banner-women.jpg" />
+        </div>
+        <div class="field">
+          <label>Link</label>
+          <input id="g-women-link" type="text" value="shop.html?gender=women" />
+        </div>
+        <label class="stock-toggle">
+          <input type="checkbox" id="g-women-active" checked />
+          <span>Show Women's tile on homepage</span>
+        </label>
+
+        <div id="g-women-preview" style="margin-top:14px"></div>
+
+        <p class="form-section-title" style="margin-top:20px">Categories shown under Women</p>
+        <div id="g-women-cats" style="display:grid;gap:8px"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:26px">
+      <button type="submit" class="btn btn-silver">Save Gender Settings</button>
+    </div>
+  </form>
+</div>
 <!-- PRODUCT MODAL -->
 <div class="modal-backdrop" id="productModal">
   <div class="product-modal">
@@ -400,7 +477,19 @@
             <label>Display Order (lower = first)</label>
             <input id="b-order" type="number" value="1" min="1" />
           </div>
-
+<div class="form-section" style="padding-top:14px">
+  <p class="form-section-title">Show on Devices</p>
+  <div class="row-2">
+    <label class="stock-toggle">
+      <input type="checkbox" id="b-show-pc" checked />
+      <span>💻 Show on PC / Desktop</span>
+    </label>
+    <label class="stock-toggle">
+      <input type="checkbox" id="b-show-mobile" checked />
+      <span>📱 Show on Mobile</span>
+    </label>
+  </div>
+</div>
           <label class="stock-toggle"><input type="checkbox" id="b-active" checked /><span>Active (show on site)</span></label>
         </div>
 
