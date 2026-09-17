@@ -309,6 +309,7 @@ async function loadCatalog() {
         colors: Array.isArray(d.colors) ? d.colors : [{ name:'Navy', hex:'#0B1A30' }],
         fabric: d.fabric || '', care: d.care || '', sku: d.sku || '',
         inStock: d.inStock !== false,
+        featured: d.featured !== false,
         stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
         _ts: d.createdAt?.seconds || 0
       });
@@ -402,6 +403,31 @@ function productCardHTML(p) {
     </div>
   </article>`;
 }
+/* ═══════ RENDER FEATURED MEN ═══════ */
+function renderFeaturedMen() {
+  const grid = document.getElementById('featuredMenGrid');
+  if (!grid) return;
+  let list = PRODUCTS.filter(p => p.gender === 'men' && p.featured !== false);
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state"><h3>No featured men's products yet</h3><p>Add products in admin.</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.slice(0, 8).map(productCardHTML).join('');
+}
+
+/* ═══════ RENDER FEATURED WOMEN ═══════ */
+function renderFeaturedWomen() {
+  const grid = document.getElementById('featuredWomenGrid');
+  if (!grid) return;
+  let list = PRODUCTS.filter(p => p.gender === 'women' && p.featured !== false);
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state"><h3>No featured women's products yet</h3><p>Add products in admin.</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.slice(0, 8).map(productCardHTML).join('');
+}
+
+/* ═══════ RENDER PRODUCTS (still used on shop page) ═══════ */
 function renderProducts(filter = 'all', sortMode = 'featured') {
   const grid = document.getElementById('productGrid');
   if (!grid) return;
@@ -416,7 +442,7 @@ function renderProducts(filter = 'all', sortMode = 'featured') {
   }
   grid.innerHTML = list.map(productCardHTML).join('');
 }
-
+function renderProducts(filter = 'all', sortMode = 'featured') {
 /* ═══════ HOME FILTER CHIPS ═══════ */
 function renderFiltersHome() {
   const el = document.getElementById('filters');
@@ -950,7 +976,7 @@ async function loadProducts() {
         desc: d.desc||'', sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
         colors: Array.isArray(d.colors) ? d.colors : [{ name:'Navy', hex:'#0B1A30' }],
         fabric: d.fabric||'', care: d.care||'', sku: d.sku||'',
-        inStock: d.inStock !== false, stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
+        inStock: d.inStock !== false, featured: d.featured !== false, stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
         _ts: d.createdAt?.seconds || 0
       });
     });
@@ -1399,6 +1425,7 @@ function openProductForm(id) {
       document.getElementById('p-fabric').value = p.fabric || '';
       document.getElementById('p-care').value = p.care || '';
       document.getElementById('p-instock').checked = p.inStock !== false;
+      document.getElementById('p-featured').checked = p.featured !== false;
       document.getElementById('p-stock').value = p.stock ?? 50;
       document.getElementById('p-lowstock').value = p.lowStock ?? 5;
       const imgs = p.images || [];
@@ -1456,6 +1483,7 @@ async function saveProduct(e) {
   const fabric = document.getElementById('p-fabric').value.trim();
   const care = document.getElementById('p-care').value.trim();
   const inStock = document.getElementById('p-instock').checked;
+  const featured = document.getElementById('p-featured').checked;
   const stock = Number(document.getElementById('p-stock').value) || 0;
   const lowStock = Number(document.getElementById('p-lowstock').value) || 5;
 
@@ -1471,7 +1499,7 @@ async function saveProduct(e) {
   const data = {
     name, gender, cat, price, oldPrice, tag, images, sizes, sku,
     colors: colors.length ? colors : [{ name:'Default', hex:'#333333' }],
-    desc, fabric, care, inStock, stock, lowStock,
+    desc, fabric, care, inStock, featured, stock, lowStock,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
 
@@ -1736,9 +1764,8 @@ const page = document.body.dataset.page;
   const user = await authReady;
 
   if (page === 'home') {
-    renderGenderSections();
-    renderFiltersHome();
-    renderProducts('all', 'featured');
+    renderFeaturedMen();
+    renderFeaturedWomen();
     await renderBannerSlots();
 
     const filters = document.getElementById('filters');
