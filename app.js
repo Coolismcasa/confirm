@@ -1288,7 +1288,7 @@ async function saveBanner(e) {
 }
 
 /* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
-/* ═══════ RENDER BANNER SLOTS ON FRONTEND ═══════ */
+/* ═══════ RENDER BANNER SLOTS ═══════ */
 async function renderBannerSlots() {
   let banners = [];
   try {
@@ -1298,38 +1298,101 @@ async function renderBannerSlots() {
       .filter(b => b.active !== false);
   } catch (e) { return; }
 
-  // ═══ Hero slider ═══
+  // Filter by device
+  const isMobileView = window.matchMedia('(max-width: 768px)').matches;
+  banners = banners.filter(b => {
+    if (isMobileView && b.showOnMobile === false) return false;
+    if (!isMobileView && b.showOnPc === false) return false;
+    return true;
+  });
+
+  // ═══ Hero slider (slide animation) ═══
   const heroSlider = document.getElementById('heroSlider');
   if (heroSlider && banners.length) {
     const heroBanners = banners.filter(b => b.position === 'hero');
     if (heroBanners.length) {
-      heroSlider.innerHTML = heroBanners.map((b, i) => {
-        const mobileImage = b.image.replace(/\.(jpg|jpeg|png|webp)$/i, '-mobile.$1');
-        return `
-          <div class="hero-slide ${i === 0 ? 'active' : ''}">
-            <picture>
-              <source media="(max-width: 768px)" srcset="${mobileImage}">
+      heroSlider.innerHTML = `
+        <div class="hero-track" id="heroTrack">
+          ${heroBanners.map(b => `
+            <div class="hero-slide">
               <img src="${b.image}" alt="Coolism" class="hero-slide-img" loading="eager">
-            </picture>
-          </div>
-        `;
-      }).join('') + `
-        <button class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Previous banner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m15 18-6-6 6-6"/>
-          </svg>
+            </div>
+          `).join('')}
+        </div>
+        <button class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <button class="hero-arrow hero-arrow-next" id="heroNext" aria-label="Next banner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m9 6 6 6-6 6"/>
-          </svg>
+        <button class="hero-arrow hero-arrow-next" id="heroNext" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
         </button>
-        <div class="hero-dots">${heroBanners.map((_, i) => 
-          `<button class="hero-dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></button>`).join('')}</div>
+        <div class="hero-dots">
+          ${heroBanners.map((_, i) => `<button class="hero-dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></button>`).join('')}
+        </div>
       `;
       initHeroSliderDynamic();
     }
   }
+
+  // ═══ Other slots ═══
+  const SLOTS = ['before-categories','after-categories','home-before-men','home-after-men','home-before-women','home-after-women','after-products','before-footer','shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'];
+
+  SLOTS.forEach(pos => {
+    const slot = document.querySelector(`[data-banner-slot="${pos}"]`);
+    if (!slot) return;
+    const matching = banners.filter(b => b.position === pos);
+    if (!matching.length) { slot.style.display = 'none'; return; }
+    slot.style.display = 'block';
+    slot.innerHTML = matching.map(b => `
+      <div class="site-banner-link">
+        <img src="${b.image}" alt="Coolism Banner" class="site-banner-img" loading="lazy">
+      </div>
+    `).join('');
+  });
+}
+
+/* ═══════ HERO SLIDER — SLIDE ANIMATION ═══════ */
+function initHeroSliderDynamic() {
+  const track = document.getElementById('heroTrack');
+  const slider = document.getElementById('heroSlider');
+  if (!track || !slider) return;
+  const slides = track.querySelectorAll('.hero-slide');
+  const dots = slider.querySelectorAll('.hero-dot');
+  const prevBtn = document.getElementById('heroPrev');
+  const nextBtn = document.getElementById('heroNext');
+  if (slides.length < 2) {
+    if (prevBtn) prevBtn.style.display = 'none';
+    if (nextBtn) nextBtn.style.display = 'none';
+    return;
+  }
+
+  let current = 0;
+  let timer = null;
+  const INTERVAL = 4000;
+
+  function goTo(i) {
+    current = ((i % slides.length) + slides.length) % slides.length;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
+  }
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+  function start() { stop(); timer = setInterval(next, INTERVAL); }
+  function stop() { if (timer) clearInterval(timer); timer = null; }
+
+  dots.forEach((dot, i) => dot.addEventListener('click', e => {
+    e.preventDefault(); e.stopPropagation();
+    goTo(i); start();
+  }));
+  prevBtn?.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); prev(); start(); });
+  nextBtn?.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); next(); start(); });
+  slider.addEventListener('mouseenter', stop);
+  slider.addEventListener('mouseleave', start);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { prev(); start(); }
+    if (e.key === 'ArrowRight') { next(); start(); }
+  });
+  start();
+}
 
   // ═══ All other banner slots ═══
   const SLOTS = [
