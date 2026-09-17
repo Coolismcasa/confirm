@@ -1319,10 +1319,10 @@ async function renderBannerSlots() {
   }
 
   // All other slots
- ['before-categories','after-categories',
- 'home-before-men','home-after-men','home-before-women','home-after-women',
- 'after-products','before-footer',
- 'shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'].forEach(pos => {
+   ['before-categories','after-categories',
+   'home-before-men','home-after-men','home-before-women','home-after-women',
+   'after-products','before-footer',
+   'shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'].forEach(pos => {
     if (!slot) return;
     const matching = banners.filter(b => b.position === pos);
     if (!matching.length) { slot.style.display = 'none'; return; }
