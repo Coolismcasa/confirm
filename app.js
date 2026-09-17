@@ -487,13 +487,7 @@ function renderShopPage() {
     if (eyebrow) eyebrow.textContent = 'Browse All';
   }
 
-  const filters = document.getElementById('filters');
-  if (filters) {
-    const catKeys = Object.keys(CATEGORIES).filter(k => {
-      const g = CATEGORIES[k].gender || 'men';
-      if (!shopGender) return true;
-      return g === shopGender;
-    });
+  
     filters.innerHTML = `<button class="chip ${!shopCat?'active':''}" data-filter="all">All</button>` +
       catKeys.map(k => `<button class="chip ${shopCat===k?'active':''}" data-filter="${k}">${CATEGORIES[k].label}</button>`).join('');
   }
@@ -1775,12 +1769,6 @@ const page = document.body.dataset.page;
       filters.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       currentFilter = chip.dataset.filter;
-      renderProducts(currentFilter, currentSort);
-    });
-
-    const sortSel = document.getElementById('sortSelect');
-    if (sortSel) sortSel.addEventListener('change', () => {
-      currentSort = sortSel.value;
       renderProducts(currentFilter, currentSort);
     });
   }
