@@ -1559,7 +1559,7 @@ function initHeroSliderDynamic() {
       `;
     }).join('');
   });
-}
+
 
 function initHeroSliderDynamic() {
   const slider = document.getElementById('heroSlider');
