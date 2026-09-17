@@ -1979,10 +1979,7 @@ const page = document.body.dataset.page;
   const user = await authReady;
 
   if (page === 'home') {
-  try { await loadGenderSettings(); renderGenderTiles(); } catch(e) { console.error('genders:', e); }
-  try { renderFeaturedMen(); } catch(e) { console.error('men:', e); }
-  try { renderFeaturedWomen(); } catch(e) { console.error('women:', e); }
-  try { await renderBannerSlots(); } catch(e) { console.error('banners:', e); }
+  renderBannerSlots().catch(e => console.log('banners:', e));
 }
     const filters = document.getElementById('filters');
     if (filters) filters.addEventListener('click', e => {
