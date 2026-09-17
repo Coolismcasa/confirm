@@ -1997,7 +1997,7 @@ const page = document.body.dataset.page;
     });
   }
 
-  if (page === 'shop') {
+    if (page === 'shop') {
     renderShopPage();
     await renderBannerSlots();
     const sortSel = document.getElementById('sortSelect');
