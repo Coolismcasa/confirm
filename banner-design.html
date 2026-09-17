@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coolism — Banner Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Jost', system-ui, sans-serif;
+  background: #0F0F0F;
+  color: #F1EFE9;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ═══════ SIDEBAR ═══════ */
+.controls {
+  background: #1A1A1A;
+  border-right: 1px solid #2A2A2A;
+  padding: 24px 22px;
+  overflow-y: auto;
+  height: 100vh;
+}
+.controls h1 {
+  font-family: 'Italiana', serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.15em;
+  color: #FFF;
+  margin-bottom: 6px;
+}
+.controls .sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: #8A8A8A;
+  margin-bottom: 24px;
+}
+.section {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #2A2A2A;
+}
+.section:last-child { border-bottom: none; }
+.section h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #8A8A8A;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+label {
+  display: block;
+  font-size: 0.75rem;
+  color: #A8A8A8;
+  margin-bottom: 5px;
+  letter-spacing: 0.05em;
+}
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 10px 14px;
+  background: #0F0F0F;
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+  color: #F1EFE9;
+  font-size: 0.85rem;
+  outline: none;
+  font-family: 'Jost', sans-serif;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+input:focus, select:focus { border-color: #6A6A6A; }
+
+input[type="color"] {
+  width: 100%;
+  height: 40px;
+  padding: 2px;
+  background: #0F0F0F;
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  background: #0F0F0F;
+  border: 1.5px dashed #3A3A3A;
+  border-radius: 8px;
+  color: #A8A8A8;
+  font-size: 0.78rem;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin-bottom: 14px;
+  accent-color: #F5F5F5;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.preset-btn {
+  padding: 10px 8px;
+  background: #0F0F0F;
+  border: 1.5px solid #2A2A2A;
+  border-radius: 8px;
+  color: #A8A8A8;
+  font-size: 0.7rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.preset-btn:hover { border-color: #6A6A6A; color: #FFF; }
+.preset-btn.active { background: #F5F5F5; color: #1A1A1A; border-color: #F5F5F5; font-weight: 700; }
+
+.btn-export {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #F5F5F5, #C8C8C8);
+  color: #1A1A1A;
+  border: none;
+  border-radius: 99px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 8px;
+  font-style: italic;
+  transition: transform 0.2s;
+}
+.btn-export:hover { transform: translateY(-2px); }
+
+.btn-reset {
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  color: #A8A8A8;
+  border: 1.5px solid #2A2A2A;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 10px;
+  font-family: 'Jost', sans-serif;
+}
+.btn-reset:hover { border-color: #8A8A8A; color: #FFF; }
+
+/* ═══════ PREVIEW ═══════ */
+.preview {
+  display: grid;
+  place-items: center;
+  padding: 30px;
+  overflow: auto;
+  height: 100vh;
+  background: #0A0A0A;
+  background-image:
+    linear-gradient(45deg, #141414 25%, transparent 25%),
+    linear-gradient(-45deg, #141414 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #141414 75%),
+    linear-gradient(-45deg, transparent 75%, #141414 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+}
+canvas {
+  max-width: 100%;
+  max-height: 90vh;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  border-radius: 8px;
+  background: #1A1A1A;
+}
+
+/* Scrollbar */
+.controls::-webkit-scrollbar { width: 6px; }
+.controls::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 3px; }
+
+@media (max-width: 800px) {
+  body { grid-template-columns: 1fr; }
+  .controls { height: auto; max-height: 50vh; border-right: none; border-bottom: 1px solid #2A2A2A; }
+  .preview { height: 50vh; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="controls">
+  <h1>BANNER DESIGNER</h1>
+  <p class="sub">Design → Export → Upload</p>
+
+  <!-- SIZE -->
+  <div class="section">
+    <h3>Size</h3>
+    <div class="preset-grid" id="sizePresets">
+      <button class="preset-btn" data-w="1920" data-h="900">Hero Desktop</button>
+      <button class="preset-btn" data-w="1080" data-h="1350">Hero Mobile</button>
+      <button class="preset-btn" data-w="1920" data-h="600">Sale Banner</button>
+      <button class="preset-btn" data-w="1080" data-h="1080">Square 1:1</button>
+      <button class="preset-btn" data-w="1200" data-h="628">OG Image</button>
+      <button class="preset-btn" data-w="1080" data-h="1920">Story 9:16</button>
+    </div>
+  </div>
+
+  <!-- BACKGROUND -->
+  <div class="section">
+    <h3>Background</h3>
+    <label>Upload Image</label>
+    <input type="file" id="bgFile" accept="image/*">
+    <label>Or Solid Color</label>
+    <input type="color" id="bgColor" value="#1A1A1A">
+    <label>Zoom: <span id="zoomVal">100%</span></label>
+    <input type="range" id="bgZoom" min="100" max="200" value="100">
+    <label>Horizontal: <span id="posXVal">50%</span></label>
+    <input type="range" id="bgX" min="0" max="100" value="50">
+    <label>Vertical: <span id="posYVal">50%</span></label>
+    <input type="range" id="bgY" min="0" max="100" value="50">
+    <label>Dark Overlay: <span id="ovVal">50%</span></label>
+    <input type="range" id="overlay" min="0" max="100" value="50">
+  </div>
+
+  <!-- EYEBROW -->
+  <div class="section">
+    <h3>Eyebrow (small text)</h3>
+    <input type="text" id="eyebrowText" placeholder="THE COOLISM DROP" value="THE COOLISM DROP">
+    <label>Color</label>
+    <input type="color" id="eyebrowColor" value="#E0E0E0">
+    <label>Size: <span id="ebSizeVal">22px</span></label>
+    <input type="range" id="eyebrowSize" min="12" max="60" value="22">
+  </div>
+
+  <!-- TITLE -->
+  <div class="section">
+    <h3>Title (big text)</h3>
+    <input type="text" id="titleText" placeholder="Comfort meets Coolism" value="Comfort meets Coolism">
+    <label>Font</label>
+    <select id="titleFont">
+      <option value="Playfair Display">Playfair Display</option>
+      <option value="Cormorant Garamond">Cormorant Garamond</option>
+      <option value="Italiana">Italiana</option>
+      <option value="Jost">Jost</option>
+    </select>
+    <label>Color</label>
+    <input type="color" id="titleColor" value="#FFFFFF">
+    <label>Size: <span id="ttSizeVal">90px</span></label>
+    <input type="range" id="titleSize" min="40" max="200" value="90">
+  </div>
+
+  <!-- SUBTITLE -->
+  <div class="section">
+    <h3>Subtitle</h3>
+    <input type="text" id="subText" placeholder="Premium pieces for everyday wear" value="Premium pieces for everyday wear">
+    <label>Color</label>
+    <input type="color" id="subColor" value="#D8D8D8">
+    <label>Size: <span id="subSizeVal">26px</span></label>
+    <input type="range" id="subSize" min="14" max="60" value="26">
+  </div>
+
+  <!-- BUTTON -->
+  <div class="section">
+    <h3>Button</h3>
+    <input type="text" id="btnText" placeholder="SHOP NOW" value="SHOP NOW">
+    <label>Background</label>
+    <input type="color" id="btnBg" value="#F5F5F5">
+    <label>Text Color</label>
+    <input type="color" id="btnTextColor" value="#1A1A1A">
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="section">
+    <h3>Layout</h3>
+    <label>Text Position</label>
+    <select id="textPosition">
+      <option value="center">Center</option>
+      <option value="left" selected>Left</option>
+      <option value="right">Right</option>
+    </select>
+    <label>Vertical Align</label>
+    <select id="textVAlign">
+      <option value="center">Middle</option>
+      <option value="bottom" selected>Bottom</option>
+      <option value="top">Top</option>
+    </select>
+  </div>
+
+  <!-- ACTIONS -->
+  <button class="btn-export" id="exportBtn">⬇ Export as JPG</button>
+  <button class="btn-reset" id="resetBtn">Reset</button>
+</aside>
+
+<!-- PREVIEW -->
+<main class="preview">
+  <canvas id="canvas" width="1920" height="900"></canvas>
+</main>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let bgImage = null;
+let bgImageReady = false;
+
+/* ═══════ SIZE PRESETS ═══════ */
+document.querySelectorAll('#sizePresets .preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#sizePresets .preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    canvas.width = Number(btn.dataset.w);
+    canvas.height = Number(btn.dataset.h);
+    // Auto-adjust title size for mobile banner
+    const isMobile = Number(btn.dataset.h) > Number(btn.dataset.w);
+    document.getElementById('titleSize').value = isMobile ? 80 : 90;
+    document.getElementById('ttSizeVal').textContent = (isMobile ? 80 : 90) + 'px';
+    draw();
+  });
+});
+// Activate first preset by default
+document.querySelector('#sizePresets .preset-btn')?.classList.add('active');
+
+/* ═══════ IMAGE UPLOAD ═══════ */
+document.getElementById('bgFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      bgImage = img;
+      bgImageReady = true;
+      draw();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+/* ═══════ INPUT LISTENERS — redraw on any change ═══════ */
+document.querySelectorAll('input, select').forEach(el => {
+  el.addEventListener('input', () => {
+    updateLabels();
+    draw();
+  });
+  el.addEventListener('change', draw);
+});
+
+function updateLabels() {
+  document.getElementById('zoomVal').textContent = document.getElementById('bgZoom').value + '%';
+  document.getElementById('posXVal').textContent = document.getElementById('bgX').value + '%';
+  document.getElementById('posYVal').textContent = document.getElementById('bgY').value + '%';
+  document.getElementById('ovVal').textContent = document.getElementById('overlay').value + '%';
+  document.getElementById('ebSizeVal').textContent = document.getElementById('eyebrowSize').value + 'px';
+  document.getElementById('ttSizeVal').textContent = document.getElementById('titleSize').value + 'px';
+  document.getElementById('subSizeVal').textContent = document.getElementById('subSize').value + 'px';
+}
+updateLabels();
+
+/* ═══════ MAIN DRAW ═══════ */
+async function draw() {
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // Wait for fonts
+  try { await document.fonts.ready; } catch(e) {}
+
+  // 1. Background — image or solid color
+  ctx.fillStyle = document.getElementById('bgColor').value;
+  ctx.fillRect(0, 0, W, H);
+
+  if (bgImageReady && bgImage) {
+    drawCoverImage(bgImage);
+  }
+
+  // 2. Dark overlay
+  const ov = Number(document.getElementById('overlay').value) / 100;
+  if (ov > 0) {
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, `rgba(0,0,0,${ov * 0.7})`);
+    grad.addColorStop(1, `rgba(0,0,0,${ov})`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // 3. Text
+  const eyebrow = document.getElementById('eyebrowText').value.trim();
+  const title = document.getElementById('titleText').value.trim();
+  const sub = document.getElementById('subText').value.trim();
+  const btnLabel = document.getElementById('btnText').value.trim();
+
+  const ebColor = document.getElementById('eyebrowColor').value;
+  const ttColor = document.getElementById('titleColor').value;
+  const subColor = document.getElementById('subColor').value;
+  const btnBg = document.getElementById('btnBg').value;
+  const btnTextCol = document.getElementById('btnTextColor').value;
+
+  const ebSize = Number(document.getElementById('eyebrowSize').value);
+  const ttSize = Number(document.getElementById('titleSize').value);
+  const subSize = Number(document.getElementById('subSize').value);
+
+  const titleFont = document.getElementById('titleFont').value;
+  const position = document.getElementById('textPosition').value;
+  const vAlign = document.getElementById('textVAlign').value;
+
+  // Calculate layout
+  const isMobile = H > W;
+  const padding = isMobile ? W * 0.08 : W * 0.06;
+
+  let textX;
+  if (position === 'left') { textX = padding; ctx.textAlign = 'left'; }
+  else if (position === 'right') { textX = W - padding; ctx.textAlign = 'right'; }
+  else { textX = W / 2; ctx.textAlign = 'center'; }
+
+  // Vertical start
+  let y;
+  if (vAlign === 'top') y = padding + ebSize;
+  else if (vAlign === 'bottom') y = H - padding;
+  else y = H / 2;
+
+  // If bottom-aligned, work backwards from bottom
+  const lineGap = isMobile ? 14 : 18;
+  const buttonH = isMobile ? 60 : 70;
+  const buttonPad = isMobile ? 32 : 44;
+  const buttonFontSize = isMobile ? 18 : 20;
+
+  if (vAlign === 'bottom') {
+    // Calculate total height of text block
+    const total =
+      (eyebrow ? ebSize + lineGap : 0) +
+      (title ? ttSize * 1.15 + lineGap : 0) +
+      (sub ? subSize + lineGap : 0) +
+      (btnLabel ? buttonH : 0);
+
+    y = H - padding - total + ebSize;
+
+    // Draw eyebrow
+    if (eyebrow) {
+      ctx.fillStyle = ebColor;
+      ctx.font = `500 ${ebSize}px 'Cormorant Garamond', serif`;
+      ctx.fillText(eyebrow.toUpperCase(), textX, y);
+      y += ebSize + lineGap;
+    }
+    // Title
+    if (title) {
+      ctx.fillStyle = ttColor;
+      ctx.font = `700 ${ttSize}px '${titleFont}', serif`;
+      y += ttSize * 0.85;
+      ctx.fillText(title, textX, y);
+      y += ttSize * 0.3 + lineGap;
+    }
+    // Subtitle
+    if (sub) {
+      ctx.fillStyle = subColor;
+      ctx.font = `300 ${subSize}px 'Jost', sans-serif`;
+      y += subSize;
+      ctx.fillText(sub, textX, y);
+      y += lineGap;
+    }
+    // Button
+    if (btnLabel) {
+      y += 20;
+      drawButton(textX, y, btnLabel, btnBg, btnTextCol, buttonPad, buttonH, buttonFontSize);
+    }
+  } else {
+    // Top / Middle
+    if (eyebrow) {
+      ctx.fillStyle = ebColor;
+      ctx.font = `500 ${ebSize}px 'Cormorant Garamond', serif`;
+      ctx.fillText(eyebrow.toUpperCase(), textX, y);
+      y += ebSize + lineGap;
+    }
+    if (title) {
+      ctx.fillStyle = ttColor;
+      ctx.font = `700 ${ttSize}px '${titleFont}', serif`;
+      y += ttSize * 0.85;
+      ctx.fillText(title, textX, y);
+      y += ttSize * 0.35 + lineGap;
+    }
+    if (sub) {
+      ctx.fillStyle = subColor;
+      ctx.font = `300 ${subSize}px 'Jost', sans-serif`;
+      y += subSize;
+      ctx.fillText(sub, textX, y);
+      y += lineGap;
+    }
+    if (btnLabel) {
+      y += 20;
+      drawButton(textX, y, btnLabel, btnBg, btnTextCol, buttonPad, buttonH, buttonFontSize);
+    }
+  }
+}
+
+function drawCoverImage(img) {
+  const W = canvas.width;
+  const H = canvas.height;
+  const zoom = Number(document.getElementById('bgZoom').value) / 100;
+  const posX = Number(document.getElementById('bgX').value) / 100;
+  const posY = Number(document.getElementById('bgY').value) / 100;
+
+  const imgRatio = img.width / img.height;
+  const canvasRatio = W / H;
+
+  let drawW, drawH;
+  if (imgRatio > canvasRatio) {
+    drawH = H * zoom;
+    drawW = drawH * imgRatio;
+  } else {
+    drawW = W * zoom;
+    drawH = drawW / imgRatio;
+  }
+
+  const offsetX = (W - drawW) * posX;
+  const offsetY = (H - drawH) * posY;
+
+  ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+}
+
+function drawButton(x, y, label, bg, textColor, padX, height, fontSize) {
+  ctx.font = `600 ${fontSize}px 'Jost', sans-serif`;
+  const metrics = ctx.measureText(label);
+  const w = metrics.width + padX * 2;
+  const h = height;
+  const align = ctx.textAlign;
+
+  let bx;
+  if (align === 'left') bx = x;
+  else if (align === 'right') bx = x - w;
+  else bx = x - w / 2;
+
+  const by = y;
+
+  // Rounded rect
+  const r = h / 2;
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  ctx.moveTo(bx + r, by);
+  ctx.arcTo(bx + w, by, bx + w, by + h, r);
+  ctx.arcTo(bx + w, by + h, bx, by + h, r);
+  ctx.arcTo(bx, by + h, bx, by, r);
+  ctx.arcTo(bx, by, bx + w, by, r);
+  ctx.closePath();
+  ctx.fill();
+
+  // Text
+  ctx.fillStyle = textColor;
+  ctx.textAlign = 'center';
+  ctx.fillText(label, bx + w / 2, by + h / 2 + fontSize * 0.35);
+  ctx.textAlign = align;
+}
+
+/* ═══════ EXPORT ═══════ */
+document.getElementById('exportBtn').addEventListener('click', () => {
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `coolism-banner-${Date.now()}.jpg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, 'image/jpeg', 0.92);
+});
+
+/* ═══════ RESET ═══════ */
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Reset all settings?')) return;
+  location.reload();
+});
+
+/* ═══════ INITIAL DRAW ═══════ */
+window.addEventListener('load', () => {
+  draw();
+});
+</script>
+</body>
+</html>
