@@ -2319,3 +2319,14 @@ img[src]{ animation: none; }
     object-fit: cover !important;
   }
 }
+/* ═══════ PROFILE CARDS — FORCE VISIBLE ═══════ */
+.profile-card,
+.order-card,
+.analytics-card,
+.card,
+.mini-cat-tile,
+.gender-tile {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
