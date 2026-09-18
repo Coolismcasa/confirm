@@ -2387,3 +2387,43 @@ img[src]{ animation: none; }
     object-fit: cover;
   }
 }
+/* ═══════ HERO — FULL WIDTH ═══════ */
+#heroSlider,
+.hero-slider {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+}
+
+#heroSlider picture,
+#heroSlider img {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+body {
+  overflow-x: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+section.hero-slider {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+#heroSlider img {
+  aspect-ratio: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+}
