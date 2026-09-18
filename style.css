@@ -2247,3 +2247,24 @@ img[src]{ animation: none; }
   aspect-ratio: auto !important;
   max-height: none !important;
 }
+/* Remove gap between hero and category tiles */
+#collections {
+  margin-top: -1px !important;
+  padding-top: 30px !important;
+}
+
+#heroSlider {
+  margin-bottom: 0 !important;
+}
+
+.hero-slider {
+  margin-bottom: 0 !important;
+}
+.banner-slot[data-banner-slot="before-categories"] {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.banner-slot[data-banner-slot="before-categories"] + #collections {
+  padding-top: 30px !important;
+}
