@@ -422,12 +422,15 @@ async function renderBannerSlots() {
     const pcUrl = buildImageUrl(PC_BANNER);
     const mobileUrl = buildImageUrl(MOBILE_BANNER);
 
+      const heroSlider = document.getElementById('heroSlider');
+  if (heroSlider) {
+    const pcUrl = buildImageUrl(PC_BANNER);
+    const mobileUrl = buildImageUrl(MOBILE_BANNER);
+
     heroSlider.innerHTML = `
       <picture>
         <source media="(max-width: 768px)" srcset="${mobileUrl}">
-        <img src="${pcUrl}" alt="Coolism Collection" fetchpriority="high" loading="eager"
-             style="width:100%;height:auto;aspect-ratio:21/9;display:block;object-fit:cover;object-position:center 35%;"
-             onerror="this.parentElement.style.background='#2A2A2E';this.style.display='none'">
+        <img src="${pcUrl}" alt="Coolism Collection" fetchpriority="high" loading="eager">
       </picture>
     `;
   }
