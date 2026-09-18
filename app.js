@@ -361,16 +361,41 @@ async function renderBannerSlots() {
   if (heroSlider) {
     const heroBanners = banners.filter(b => b.position === 'hero');
     if (heroBanners.length) {
-      heroSlider.innerHTML = `
-        <div class="hero-track" id="heroTrack">
-          ${heroBanners.map(b => `<div class="hero-slide"><img src="${b.image}" class="hero-slide-img" loading="eager" alt="Coolism"></div>`).join('')}
-        </div>
-        <button class="hero-arrow hero-arrow-prev" id="heroPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></button>
-        <button class="hero-arrow hero-arrow-next" id="heroNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button>
-        <div class="hero-dots">${heroBanners.map((_, i) => `<button class="hero-dot ${i===0?'active':''}" data-slide="${i}"></button>`).join('')}</div>
-      `;
-      initHeroSliderDynamic();
-    }
+  let current = 0;
+  const images = heroBanners.map(b => b.image);
+
+  function showSlide(i) {
+    current = i;
+    const img = document.getElementById('heroImg');
+    if (img) img.src = images[current];
+    document.querySelectorAll('.heroDot').forEach((d, idx) => {
+      d.style.background = idx === current ? '#FFF' : 'rgba(255,255,255,0.5)';
+      d.style.width = idx === current ? '28px' : '8px';
+    });
+  }
+
+  heroSlider.style.position = 'relative';
+  heroSlider.style.overflow = 'hidden';
+  heroSlider.innerHTML = `
+    <img id="heroImg" src="${images[0]}" style="width:100%;display:block;aspect-ratio:21/9;object-fit:cover;min-height:200px" alt="Coolism">
+    <button id="heroPrevBtn" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(20,20,20,0.7);border:1px solid rgba(255,255,255,0.3);color:#FFF;font-size:22px;cursor:pointer;display:grid;place-items:center;z-index:10">‹</button>
+    <button id="heroNextBtn" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(20,20,20,0.7);border:1px solid rgba(255,255,255,0.3);color:#FFF;font-size:22px;cursor:pointer;display:grid;place-items:center;z-index:10">›</button>
+    <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10">
+      ${images.map((_, i) => `<button class="heroDot" data-i="${i}" style="width:8px;height:8px;border-radius:99px;background:${i===0?'#FFF':'rgba(255,255,255,0.5)'};border:1px solid rgba(255,255,255,0.8);cursor:pointer;padding:0;transition:all 0.3s"></button>`).join('')}
+    </div>
+  `;
+
+  document.getElementById('heroPrevBtn').onclick = () => showSlide((current - 1 + images.length) % images.length);
+  document.getElementById('heroNextBtn').onclick = () => showSlide((current + 1) % images.length);
+  document.querySelectorAll('.heroDot').forEach(d => {
+    d.onclick = () => showSlide(Number(d.dataset.i));
+  });
+
+  // Auto-rotate every 4 seconds
+  if (images.length > 1) {
+    setInterval(() => showSlide((current + 1) % images.length), 4000);
+  }
+}
   }
 
   const SLOTS = ['before-categories','after-categories','home-before-men','home-after-men','home-before-women','home-after-women','after-products','before-footer','shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'];
