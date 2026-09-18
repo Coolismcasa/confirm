@@ -2460,7 +2460,7 @@ section.hero-slider {
 body {
   overflow-x: hidden !important;
 }
-/* ═══════ HERO SLIDER — FULL WIDTH ═══════ */
+/* ═══════ HERO — FULL IMAGE, NO CROP ═══════ */
 #heroSlider,
 .hero-slider {
   width: 100% !important;
@@ -2489,26 +2489,10 @@ body {
   height: auto !important;
   margin: 0 !important;
   padding: 0 !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
+  /* No aspect-ratio — image shows at natural size */
 }
 
-/* Desktop — wide cinematic */
-@media (min-width: 769px) {
-  #heroSlider img {
-    aspect-ratio: 21 / 9 !important;
-    object-position: center 35% !important;
-  }
-}
-
-/* Mobile — portrait 4:5 */
-@media (max-width: 768px) {
-  #heroSlider img {
-    aspect-ratio: 4 / 5 !important;
-    object-position: center top !important;
-  }
-}
-
-/* Prevent body scroll */
 body {
   overflow-x: hidden !important;
 }
