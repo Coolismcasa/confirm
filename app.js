@@ -318,6 +318,11 @@ function renderShopPage() {
   // ═══ Category tiles grid ═══
   const shopCatGrid = document.getElementById('shopCatGrid');
   if (shopCatGrid) {
+    shopCatGrid.style.display = 'grid';
+shopCatGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+shopCatGrid.style.gap = '24px';
+if (window.innerWidth <= 900) shopCatGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+if (window.innerWidth <= 620) shopCatGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
     const catKeys = Object.keys(CATEGORIES).filter(k => {
       const g = CATEGORIES[k].gender || 'men';
       if (!shopGender) return true;
@@ -328,14 +333,14 @@ function renderShopPage() {
       shopCatGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>No categories yet.</p></div>`;
     } else {
       shopCatGrid.innerHTML = catKeys.map(k => {
-        const c = CATEGORIES[k];
-        return `<a href="shop.html?${shopGender ? 'gender='+shopGender+'&' : ''}cat=${k}" class="mini-cat-tile">
-          <div class="mini-cat-img">
-            <img src="${c.img}" alt="${c.label}" loading="lazy" onerror="this.style.background='#E8E8E8';this.style.display='block'">
-          </div>
-          <h4>${c.label}</h4>
-        </a>`;
-      }).join('');
+  const c = CATEGORIES[k];
+  return `<a href="shop.html?${shopGender ? 'gender='+shopGender+'&' : ''}cat=${k}" style="display:block;text-decoration:none;text-align:center">
+    <div style="width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#EDE8DD;margin-bottom:12px">
+      <img src="${c.img}" alt="${c.label}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentElement.style.display='grid';this.parentElement.style.placeItems='center';this.parentElement.innerHTML='<span style=color:#8A8A8A;font-size:2rem;font-family:serif>' + '${c.label.charAt(0)}' + '</span>'">
+    </div>
+    <h4 style="font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#0B1A30;margin:0">${c.label}</h4>
+  </a>`;
+}).join('');
     }
   }
 
