@@ -14,7 +14,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* ═══════ HERO BANNER FILES ═══════ */
+/* ═══════ HERO BANNERS ═══════ */
 const PC_BANNER = 'banner11.jpg';
 const MOBILE_BANNER = 'banner111.jpg';
 
@@ -414,7 +414,6 @@ function renderShopPage() {
     window.location.href = 'shop.html' + (params.toString() ? '?' + params.toString() : '');
   });
 }
-
 
 /* ═══════ BANNERS ═══════ */
 async function renderBannerSlots() {
