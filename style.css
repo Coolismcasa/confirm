@@ -2373,3 +2373,17 @@ img[src]{ animation: none; }
     object-position: top center !important;
   }
 }
+@media (max-width: 768px) {
+  #heroSlider {
+    background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+    min-height: 400px;
+    max-height: 520px;
+    overflow: hidden;
+  }
+  #heroSlider img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+}
