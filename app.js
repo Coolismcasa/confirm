@@ -182,7 +182,7 @@ async function loadCatalog() {
     CATEGORIES = cachedCats;
     return;
   }
-
+const getCat = k => CATEGORIES[k] || FALLBACK_CATS[k] || { label:k, gender:'men', desc:'', img:'' };
   // Load categories
   try {
     const snap = await db.collection('categories').get();
