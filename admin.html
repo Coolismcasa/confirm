@@ -10,7 +10,19 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-page="admin">
+<body data-page="admin">
 
+<!-- ADMIN LOCK -->
+<div id="adminLock" style="position:fixed;inset:0;background:#0B1A30;z-index:9999;display:grid;place-items:center;font-family:'Jost',sans-serif">
+  <div style="background:#0F2140;padding:40px;border-radius:20px;border:1px solid rgba(240,240,240,.15);width:min(400px,90vw)">
+    <h2 style="font-family:'Playfair Display',serif;color:#F9F8F6;font-size:1.6rem;margin:0 0 8px">Admin Access</h2>
+    <p style="color:#A8B4CC;font-size:.9rem;margin:0 0 24px">Enter credentials to continue</p>
+    <input id="lockUser" type="text" placeholder="Username" style="width:100%;padding:14px 18px;border-radius:10px;background:#091428;border:1px solid rgba(240,240,240,.15);color:#F1EFE9;font-size:.95rem;outline:none;margin-bottom:14px;box-sizing:border-box">
+    <input id="lockPass" type="password" placeholder="Password" style="width:100%;padding:14px 18px;border-radius:10px;background:#091428;border:1px solid rgba(240,240,240,.15);color:#F1EFE9;font-size:.95rem;outline:none;margin-bottom:20px;box-sizing:border-box">
+    <button id="lockBtn" style="width:100%;padding:16px;border-radius:99px;background:linear-gradient(135deg,#F5F5F5,#C8C8C8);color:#0B1A30;border:none;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;font-style:italic">Unlock</button>
+    <p id="lockError" style="color:#E06A6A;font-size:.85rem;margin:14px 0 0;text-align:center;display:none">Wrong username or password</p>
+  </div>
+</div>
 <header class="nav-wrap" id="navWrap">
   <div class="container nav">
     <a href="index.html" class="logo"><span class="dot"></span>COOLISM</a>
@@ -542,5 +554,34 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
+  <script>
+// ═══════ ADMIN LOCK ═══════
+(function() {
+  const USERNAME = 'haris';
+  const PASSWORD = '112233';
+  const KEY = 'coolism_admin_unlocked';
+
+  // If already unlocked this session, skip
+  if (sessionStorage.getItem(KEY) === '1') {
+    document.getElementById('adminLock').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('lockBtn').onclick = function() {
+    const u = document.getElementById('lockUser').value.trim();
+    const p = document.getElementById('lockPass').value;
+    if (u === USERNAME && p === PASSWORD) {
+      sessionStorage.setItem(KEY, '1');
+      document.getElementById('adminLock').style.display = 'none';
+    } else {
+      document.getElementById('lockError').style.display = 'block';
+    }
+  };
+
+  document.getElementById('lockPass').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('lockBtn').click();
+  });
+})();
+</script>
 </body>
 </html>
