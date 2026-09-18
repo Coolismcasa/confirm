@@ -1,4 +1,6 @@
-/* ═══════ COOLISM — CLEAN APP.JS ═══════ */
+/* ═══════════════════════════════════════════════════════════
+   COOLISM — Complete App Logic
+   ═══════════════════════════════════════════════════════════ */
 
 const firebaseConfig = {
   apiKey: "AIzaSyB9V9qVT1Tsje14gVs5r2q-f1IePFqFfTE",
@@ -11,29 +13,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-/* ═══════ FIRESTORE CACHE (5 min) ═══════ */
-const CACHE_TTL = 5 * 60 * 1000;
-const CACHE_KEY = 'coolism_cache_v1';
 
-function getCache(key) {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY + '_' + key);
-    if (!raw) return null;
-    const obj = JSON.parse(raw);
-    if (Date.now() - obj.time > CACHE_TTL) {
-      localStorage.removeItem(CACHE_KEY + '_' + key);
-      return null;
-    }
-    return obj.data;
-  } catch (e) { return null; }
-}
+/* ═══════ HERO BANNER FILES ═══════ */
+const PC_BANNER = 'banner11.jpg';
+const MOBILE_BANNER = 'banner111.jpg';
 
-function setCache(key, data) {
-  try {
-    localStorage.setItem(CACHE_KEY + '_' + key, JSON.stringify({ time: Date.now(), data }));
-  } catch (e) {}
-}
-
+/* ═══════ STATE ═══════ */
 let PRODUCTS = [];
 let CATEGORIES = {};
 let cart = [];
@@ -63,59 +48,82 @@ function buildImageUrl(filenameOrUrl) {
   return base + 'images/' + v;
 }
 
-/* ═══════ FALLBACKS ═══════ */
+/* ═══════ CACHE (5 min) ═══════ */
+const CACHE_TTL = 5 * 60 * 1000;
+const CACHE_KEY = 'coolism_cache_v1';
+
+function getCache(key) {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY + '_' + key);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (Date.now() - obj.time > CACHE_TTL) {
+      localStorage.removeItem(CACHE_KEY + '_' + key);
+      return null;
+    }
+    return obj.data;
+  } catch (e) { return null; }
+}
+
+function setCache(key, data) {
+  try {
+    localStorage.setItem(CACHE_KEY + '_' + key, JSON.stringify({ time: Date.now(), data }));
+  } catch (e) {}
+}
+
+/* ═══════ FALLBACK CATEGORIES ═══════ */
 const FALLBACK_CATS = {
-  shirts:   { label:'Shirts',        gender:'men',   desc:'Casual & formal shirts',           img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80' },
-  pants:    { label:'Pants',         gender:'men',   desc:'Chinos, cargos & formal',          img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80' },
-  jackets:  { label:'Jackets',       gender:'men',   desc:'Bombers & leather',                img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80' },
-  hoodies:  { label:'Hoodies',       gender:'men',   desc:'Oversized comfort',                img:'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80' },
-  suits2:   { label:'2-Piece Suits', gender:'women', desc:'Coordinated two-piece sets',       img:'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=80' },
-  suits3:   { label:'3-Piece Suits', gender:'women', desc:'Embroidered three-piece',          img:'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80' },
-  kurtis:   { label:'Kurtis',        gender:'women', desc:'Daily & formal kurtis',            img:'https://images.unsplash.com/photo-1583391733975-a6a3a6c6c4d1?w=800&q=80' },
-  purses:   { label:'Purses',        gender:'women', desc:'Leather & mini totes',             img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80' }
+  shirts:   { label:'Shirts',        gender:'men',   desc:'Casual & formal shirts',           img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=60&auto=format' },
+  pants:    { label:'Pants',         gender:'men',   desc:'Chinos, cargos & formal',          img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=60&auto=format' },
+  jackets:  { label:'Jackets',       gender:'men',   desc:'Bombers & leather',                img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=60&auto=format' },
+  hoodies:  { label:'Hoodies',       gender:'men',   desc:'Oversized comfort',                img:'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=60&auto=format' },
+  suits2:   { label:'2-Piece Suits', gender:'women', desc:'Coordinated two-piece sets',       img:'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=60&auto=format' },
+  suits3:   { label:'3-Piece Suits', gender:'women', desc:'Embroidered three-piece',          img:'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=60&auto=format' },
+  kurtis:   { label:'Kurtis',        gender:'women', desc:'Daily & formal kurtis',            img:'https://images.unsplash.com/photo-1583391733975-a6a3a6c6c4d1?w=600&q=60&auto=format' },
+  purses:   { label:'Purses',        gender:'women', desc:'Leather & mini totes',             img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=60&auto=format' }
 };
 
 const FALLBACK_PRODUCTS = [
   { id:'m1', name:'Classic White Tee', gender:'men', cat:'shirts', price:2490, oldPrice:3200, tag:'New',
-    images:['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=60&auto=format'],
     desc:'Relaxed-fit heavyweight cotton tee.', sizes:['S','M','L','XL','XXL'],
     colors:[{name:'White',hex:'#F9F8F6'},{name:'Navy',hex:'#0B1A30'}],
-    fabric:'100% Cotton', care:'Machine wash cold', sku:'CLM-M-SH-001', inStock:true, stock:50, lowStock:5 },
+    fabric:'100% Cotton', care:'Machine wash cold', sku:'CLM-M-SH-001', inStock:true, stock:50, lowStock:5, featured:true },
   { id:'m2', name:'Pleated Wide-Leg Trousers', gender:'men', cat:'pants', price:5890, oldPrice:6990, tag:'Bestseller',
-    images:['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=600&q=60&auto=format'],
     desc:'Tailored with wide flowing leg.', sizes:['30','32','34','36','38'],
     colors:[{name:'Brown',hex:'#6B5442'}], fabric:'Poly-wool', care:'Dry clean', sku:'CLM-M-PT-001',
-    inStock:true, stock:25, lowStock:5 },
+    inStock:true, stock:25, lowStock:5, featured:true },
   { id:'m3', name:'Oversized Navy Hoodie', gender:'men', cat:'hoodies', price:6490, oldPrice:7990, tag:'Bestseller',
-    images:['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=60&auto=format'],
     desc:'Dropped shoulder boxy fit.', sizes:['S','M','L','XL','XXL'],
     colors:[{name:'Navy',hex:'#131F3A'}], fabric:'Cotton blend', care:'Machine wash', sku:'CLM-M-HD-001',
-    inStock:true, stock:60, lowStock:5 },
+    inStock:true, stock:60, lowStock:5, featured:true },
   { id:'m4', name:'Moto Leather Jacket', gender:'men', cat:'jackets', price:18900, tag:'Limited',
-    images:['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=60&auto=format'],
     desc:'Full-grain sheep leather.', sizes:['S','M','L','XL'],
     colors:[{name:'Black',hex:'#0E0E0E'}], fabric:'Leather', care:'Wipe clean', sku:'CLM-M-JK-001',
-    inStock:true, stock:8, lowStock:3 },
+    inStock:true, stock:8, lowStock:3, featured:true },
   { id:'w1', name:'Embroidered 3-Piece Suit', gender:'women', cat:'suits3', price:12890, oldPrice:14990, tag:'Bestseller',
-    images:['https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&q=60&auto=format'],
     desc:'Classic three-piece with embroidery.', sizes:['XS','S','M','L','XL'],
     colors:[{name:'Ivory',hex:'#F4EFE6'}], fabric:'Lawn & Chiffon', care:'Dry clean', sku:'CLM-W-3P-001',
-    inStock:true, stock:18, lowStock:3 },
+    inStock:true, stock:18, lowStock:3, featured:true },
   { id:'w2', name:'Printed 2-Piece Suit', gender:'women', cat:'suits2', price:8490, tag:'New',
-    images:['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=60&auto=format'],
     desc:'Co-ordinated two-piece.', sizes:['XS','S','M','L','XL'],
     colors:[{name:'Cream',hex:'#EFE5D2'}], fabric:'Cotton Lawn', care:'Machine wash', sku:'CLM-W-2P-001',
-    inStock:true, stock:25, lowStock:5 },
+    inStock:true, stock:25, lowStock:5, featured:true },
   { id:'w3', name:'Chikankari Kurti', gender:'women', cat:'kurtis', price:5990, oldPrice:6990, tag:'Bestseller',
-    images:['https://images.unsplash.com/photo-1583391733975-a6a3a6c6c4d1?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1583391733975-a6a3a6c6c4d1?w=600&q=60&auto=format'],
     desc:'Hand-embroidered soft cotton.', sizes:['XS','S','M','L','XL'],
     colors:[{name:'White',hex:'#F9F8F6'}], fabric:'Cotton', care:'Hand wash', sku:'CLM-W-KT-001',
-    inStock:true, stock:22, lowStock:5 },
+    inStock:true, stock:22, lowStock:5, featured:true },
   { id:'w4', name:'Leather Crossbody Purse', gender:'women', cat:'purses', price:7990, tag:'New',
-    images:['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700&q=80'],
+    images:['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=60&auto=format'],
     desc:'Compact full-grain leather.', sizes:['One Size'],
     colors:[{name:'Black',hex:'#0E0E0E'}], fabric:'Leather', care:'Wipe clean', sku:'CLM-W-PU-001',
-    inStock:true, stock:16, lowStock:5 }
+    inStock:true, stock:16, lowStock:5, featured:true }
 ];
 
 /* ═══════ TOAST ═══════ */
@@ -165,7 +173,8 @@ async function saveUserToFirestore(user) {
     };
     if (!snap.exists) {
       await ref.set({ ...base, firstName:'', lastName:'', fullName:'', phone:'',
-        address:'', city:'', district:'', province:'', createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        address:'', city:'', district:'', province:'',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     } else {
       await ref.update(base);
     }
@@ -174,7 +183,6 @@ async function saveUserToFirestore(user) {
 
 /* ═══════ LOAD DATA ═══════ */
 async function loadCatalog() {
-  // Check cache first (5 min)
   const cachedProducts = getCache('products');
   const cachedCats = getCache('categories');
   if (cachedProducts && cachedCats && cachedProducts.length) {
@@ -183,7 +191,6 @@ async function loadCatalog() {
     return;
   }
 
-  // Load categories
   try {
     const snap = await db.collection('categories').get();
     const loaded = {};
@@ -200,11 +207,8 @@ async function loadCatalog() {
     });
     CATEGORIES = { ...FALLBACK_CATS, ...loaded };
     hidden.forEach(id => { delete CATEGORIES[id]; });
-  } catch (e) {
-    CATEGORIES = { ...FALLBACK_CATS };
-  }
+  } catch (e) { CATEGORIES = { ...FALLBACK_CATS }; }
 
-  // Load products
   try {
     const snap = await db.collection('products').get();
     const fsProducts = [];
@@ -214,9 +218,7 @@ async function loadCatalog() {
       if (d.hidden) { hiddenIds.push(doc.id); return; }
       fsProducts.push({
         id: doc.id,
-        name: d.name || '',
-        gender: d.gender || 'men',
-        cat: d.cat || 'shirts',
+        name: d.name || '', gender: d.gender || 'men', cat: d.cat || 'shirts',
         price: Number(d.price) || 0,
         oldPrice: d.oldPrice ? Number(d.oldPrice) : null,
         tag: d.tag || null,
@@ -224,13 +226,10 @@ async function loadCatalog() {
         desc: d.desc || '',
         sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
         colors: Array.isArray(d.colors) ? d.colors : [{ name:'Navy', hex:'#0B1A30' }],
-        fabric: d.fabric || '',
-        care: d.care || '',
-        sku: d.sku || '',
+        fabric: d.fabric || '', care: d.care || '', sku: d.sku || '',
         inStock: d.inStock !== false,
         featured: d.featured !== false,
-        stock: d.stock ?? 50,
-        lowStock: d.lowStock ?? 5,
+        stock: d.stock ?? 50, lowStock: d.lowStock ?? 5,
         _ts: d.createdAt?.seconds || 0
       });
     });
@@ -239,14 +238,16 @@ async function loadCatalog() {
     const fallbacksKept = FALLBACK_PRODUCTS.filter(p => !byId[p.id] && !hiddenIds.includes(p.id));
     PRODUCTS = [...fsProducts, ...fallbacksKept];
   } catch (e) {
-    PRODUCTS = [...FALLBACK_PRODUCTS];
+    PRODUCTS = [ ...FALLBACK_PRODUCTS ];
   }
 
-  // Save to cache
   setCache('products', PRODUCTS);
   setCache('categories', CATEGORIES);
 }
-/* ═══════ VISUALS ═══════ */
+
+const getCat = k => CATEGORIES[k] || FALLBACK_CATS[k] || { label:k, gender:'men', desc:'', img:'' };
+
+/* ═══════ PRODUCT VISUALS ═══════ */
 function productVisual(p, cls = 'card-placeholder') {
   const img = (p.images && p.images[0]) || p.img;
   if (img) {
@@ -257,8 +258,10 @@ function productVisual(p, cls = 'card-placeholder') {
 }
 function cartVisual(p) {
   const img = (p.images && p.images[0]) || p.img;
-  if (img) return `<img src="${img}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-    <div class="mini-letter" style="display:none;background:#333">${p.name.charAt(0)}</div>`;
+  if (img) {
+    return `<img src="${img}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="mini-letter" style="display:none;background:#333">${p.name.charAt(0)}</div>`;
+  }
   return `<div class="mini-letter" style="background:#333">${p.name.charAt(0)}</div>`;
 }
 
@@ -292,7 +295,7 @@ function productCardHTML(p) {
   </article>`;
 }
 
-/* ═══════ RENDER FEATURED MEN ═══════ */
+/* ═══════ FEATURED SECTIONS ═══════ */
 function renderFeaturedMen() {
   const grid = document.getElementById('featuredMenGrid');
   if (!grid) return;
@@ -304,7 +307,6 @@ function renderFeaturedMen() {
   grid.innerHTML = list.slice(0, 8).map(productCardHTML).join('');
 }
 
-/* ═══════ RENDER FEATURED WOMEN ═══════ */
 function renderFeaturedWomen() {
   const grid = document.getElementById('featuredWomenGrid');
   if (!grid) return;
@@ -316,26 +318,12 @@ function renderFeaturedWomen() {
   grid.innerHTML = list.slice(0, 8).map(productCardHTML).join('');
 }
 
-/* ═══════ RENDER PRODUCTS (shop page) ═══════ */
-function renderProducts(filter = 'all', sortMode = 'featured') {
-  const grid = document.getElementById('productGrid');
-  if (!grid) return;
-  let list = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filter);
-  list = sortProducts(list, sortMode);
-  if (!list.length) {
-    grid.innerHTML = `<div class="empty-state"><h3>No products found</h3></div>`;
-    return;
-  }
-  grid.innerHTML = list.map(productCardHTML).join('');
-}
-
 /* ═══════ SHOP PAGE ═══════ */
 function getUrlParam(key) { return new URLSearchParams(window.location.search).get(key); }
 function renderShopPage() {
   shopGender = getUrlParam('gender');
   shopCat = getUrlParam('cat');
 
-  // ═══ Gender switch (top) ═══
   const genderSwitch = document.getElementById('genderSwitch');
   if (genderSwitch) {
     genderSwitch.innerHTML = `
@@ -345,7 +333,6 @@ function renderShopPage() {
     `;
   }
 
-  // ═══ Page title ═══
   const title = document.getElementById('shopTitle');
   const sub = document.getElementById('shopSubtitle');
   const eyebrow = document.getElementById('shopEyebrow');
@@ -354,12 +341,12 @@ function renderShopPage() {
 
   if (shopGender === 'men') {
     if (title) title.textContent = "Men's Collection";
-    if (sub) sub.textContent = "Sharp tailoring, premium fabrics, built for daily wear.";
+    if (sub) sub.textContent = "Sharp tailoring, premium fabrics.";
     if (eyebrow) eyebrow.textContent = 'For Him';
     if (catHeading) catHeading.textContent = "Shop Men's Categories";
   } else if (shopGender === 'women') {
     if (title) title.textContent = "Women's Collection";
-    if (sub) sub.textContent = "Fluid silhouettes and elevated essentials.";
+    if (sub) sub.textContent = "Fluid silhouettes and essentials.";
     if (eyebrow) eyebrow.textContent = 'For Her';
     if (catHeading) catHeading.textContent = "Shop Women's Categories";
   } else {
@@ -369,36 +356,31 @@ function renderShopPage() {
     if (catHeading) catHeading.textContent = "Shop by Category";
   }
 
-  // ═══ Category tiles grid ═══
   const shopCatGrid = document.getElementById('shopCatGrid');
   if (shopCatGrid) {
-    shopCatGrid.style.display = 'grid';
-shopCatGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-shopCatGrid.style.gap = '24px';
-if (window.innerWidth <= 900) shopCatGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
-if (window.innerWidth <= 620) shopCatGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
     const catKeys = Object.keys(CATEGORIES).filter(k => {
       const g = CATEGORIES[k].gender || 'men';
       if (!shopGender) return true;
       return g === shopGender;
     });
-
     if (!catKeys.length) {
       shopCatGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>No categories yet.</p></div>`;
     } else {
       shopCatGrid.innerHTML = catKeys.map(k => {
-  const c = CATEGORIES[k];
-  return `<a href="shop.html?${shopGender ? 'gender='+shopGender+'&' : ''}cat=${k}" style="display:block;text-decoration:none;text-align:center">
-    <div style="width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#EDE8DD;margin-bottom:12px">
-      <img src="${c.img}" alt="${c.label}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentElement.style.display='grid';this.parentElement.style.placeItems='center';this.parentElement.innerHTML='<span style=color:#8A8A8A;font-size:2rem;font-family:serif>' + '${c.label.charAt(0)}' + '</span>'">
-    </div>
-    <h4 style="font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#0B1A30;margin:0">${c.label}</h4>
-  </a>`;
-}).join('');
+        const c = CATEGORIES[k];
+        return `<a href="shop.html?${shopGender ? 'gender='+shopGender+'&' : ''}cat=${k}" style="display:block;text-decoration:none;text-align:center">
+          <div style="width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#EDE8DD;margin-bottom:12px">
+            <img src="${c.img}" alt="${c.label}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'">
+          </div>
+          <h4 style="font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#0B1A30;margin:0">${c.label}</h4>
+        </a>`;
+      }).join('');
     }
+    shopCatGrid.style.display = 'grid';
+    shopCatGrid.style.gridTemplateColumns = window.innerWidth <= 620 ? 'repeat(2, 1fr)' : window.innerWidth <= 900 ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)';
+    shopCatGrid.style.gap = '24px';
   }
 
-  // ═══ Filter chips ═══
   const filters = document.getElementById('filters');
   if (filters) {
     const catKeys = Object.keys(CATEGORIES).filter(k => {
@@ -410,31 +392,18 @@ if (window.innerWidth <= 620) shopCatGrid.style.gridTemplateColumns = 'repeat(2,
       catKeys.map(k => `<button class="chip ${shopCat===k?'active':''}" data-filter="${k}">${CATEGORIES[k].label}</button>`).join('');
   }
 
-  // ═══ Products ═══
   let list = PRODUCTS;
   if (shopGender) list = list.filter(p => p.gender === shopGender);
   if (shopCat) list = list.filter(p => p.cat === shopCat);
   list = sortProducts(list, currentSort);
 
-  if (heading) {
-    heading.textContent = shopCat
-      ? getCat(shopCat).label
-      : (shopGender ? `${shopGender==='men'?'Men':'Women'}'s Products` : 'All Products');
-  }
+  if (heading) heading.textContent = shopCat ? getCat(shopCat).label : (shopGender ? `${shopGender==='men'?'Men':'Women'}'s Products` : 'All Products');
 
   const grid = document.getElementById('productGrid');
   if (grid) {
-    if (!list.length) {
-      grid.innerHTML = `<div class="empty-state">
-        <h3>No products found</h3>
-        <p>Try a different category.</p>
-      </div>`;
-    } else {
-      grid.innerHTML = list.map(productCardHTML).join('');
-    }
+    grid.innerHTML = list.length ? list.map(productCardHTML).join('') : `<div class="empty-state"><h3>No products found</h3></div>`;
   }
 
-  // ═══ Filter chip clicks ═══
   if (filters) filters.addEventListener('click', e => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
@@ -448,10 +417,25 @@ if (window.innerWidth <= 620) shopCatGrid.style.gridTemplateColumns = 'repeat(2,
 
 /* ═══════ BANNERS ═══════ */
 async function renderBannerSlots() {
+  const heroSlider = document.getElementById('heroSlider');
+  if (heroSlider) {
+    const pcUrl = buildImageUrl(PC_BANNER);
+    const mobileUrl = buildImageUrl(MOBILE_BANNER);
+
+    heroSlider.innerHTML = `
+      <picture>
+        <source media="(max-width: 768px)" srcset="${mobileUrl}">
+        <img src="${pcUrl}" alt="Coolism Collection" fetchpriority="high" loading="eager"
+             style="width:100%;height:auto;display:block;object-fit:cover;object-position:center;background:#1A1A1A;"
+             onerror="this.style.background='linear-gradient(135deg,#1A1A1A,#2A2A2A)';this.style.minHeight='400px'">
+      </picture>
+    `;
+  }
+
   let banners = [];
   try {
     const snap = await db.collection('banners').orderBy('order', 'asc').get();
-    banners = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(b => b.active !== false);
+    banners = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(b => b.active !== false && b.position !== 'hero');
   } catch (e) { return; }
 
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
@@ -460,47 +444,6 @@ async function renderBannerSlots() {
     if (!isMobile && b.showOnPc === false) return false;
     return true;
   });
-
-  const heroSlider = document.getElementById('heroSlider');
-  if (heroSlider) {
-    const heroBanners = banners.filter(b => b.position === 'hero');
-    if (heroBanners.length) {
-  let current = 0;
-  const images = heroBanners.map(b => b.image);
-
-  function showSlide(i) {
-    current = i;
-    const img = document.getElementById('heroImg');
-    if (img) img.src = images[current];
-    document.querySelectorAll('.heroDot').forEach((d, idx) => {
-      d.style.background = idx === current ? '#FFF' : 'rgba(255,255,255,0.5)';
-      d.style.width = idx === current ? '28px' : '8px';
-    });
-  }
-
-  heroSlider.style.position = 'relative';
-  heroSlider.style.overflow = 'hidden';
-  heroSlider.innerHTML = `
-    <img id="heroImg" src="${images[0]}" style="width:100%;display:block;aspect-ratio:21/9;object-fit:cover;min-height:200px" alt="Coolism">
-    <button id="heroPrevBtn" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(20,20,20,0.7);border:1px solid rgba(255,255,255,0.3);color:#FFF;font-size:22px;cursor:pointer;display:grid;place-items:center;z-index:10">‹</button>
-    <button id="heroNextBtn" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(20,20,20,0.7);border:1px solid rgba(255,255,255,0.3);color:#FFF;font-size:22px;cursor:pointer;display:grid;place-items:center;z-index:10">›</button>
-    <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10">
-      ${images.map((_, i) => `<button class="heroDot" data-i="${i}" style="width:8px;height:8px;border-radius:99px;background:${i===0?'#FFF':'rgba(255,255,255,0.5)'};border:1px solid rgba(255,255,255,0.8);cursor:pointer;padding:0;transition:all 0.3s"></button>`).join('')}
-    </div>
-  `;
-
-  document.getElementById('heroPrevBtn').onclick = () => showSlide((current - 1 + images.length) % images.length);
-  document.getElementById('heroNextBtn').onclick = () => showSlide((current + 1) % images.length);
-  document.querySelectorAll('.heroDot').forEach(d => {
-    d.onclick = () => showSlide(Number(d.dataset.i));
-  });
-
-  // Auto-rotate every 4 seconds
-  if (images.length > 1) {
-    setInterval(() => showSlide((current + 1) % images.length), 4000);
-  }
-}
-  }
 
   const SLOTS = ['before-categories','after-categories','home-before-men','home-after-men','home-before-women','home-after-women','after-products','before-footer','shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'];
   SLOTS.forEach(pos => {
@@ -511,35 +454,6 @@ async function renderBannerSlots() {
     slot.style.display = 'block';
     slot.innerHTML = matching.map(b => `<div class="site-banner-link"><img src="${b.image}" class="site-banner-img" loading="lazy" alt="Coolism"></div>`).join('');
   });
-}
-
-function initHeroSliderDynamic() {
-  const track = document.getElementById('heroTrack');
-  const slider = document.getElementById('heroSlider');
-  if (!track || !slider) return;
-  const slides = track.querySelectorAll('.hero-slide');
-  const dots = slider.querySelectorAll('.hero-dot');
-  if (slides.length < 2) return;
-
-  let current = 0, timer = null;
-  const INTERVAL = 4000;
-
-  function goTo(i) {
-    current = ((i % slides.length) + slides.length) % slides.length;
-    track.style.transform = `translateX(-${current * 100}%)`;
-    dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
-  }
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
-  function start() { stop(); timer = setInterval(next, INTERVAL); }
-  function stop() { if (timer) clearInterval(timer); timer = null; }
-
-  dots.forEach((dot, i) => dot.addEventListener('click', e => { e.preventDefault(); goTo(i); start(); }));
-  document.getElementById('heroPrev')?.addEventListener('click', e => { e.preventDefault(); prev(); start(); });
-  document.getElementById('heroNext')?.addEventListener('click', e => { e.preventDefault(); next(); start(); });
-  slider.addEventListener('mouseenter', stop);
-  slider.addEventListener('mouseleave', start);
-  start();
 }
 
 /* ═══════ CART ═══════ */
@@ -558,7 +472,9 @@ function addToCart(product, size, color, qty) {
   const existing = cart.find(i => lineKey(i) === key);
   if (existing) existing.qty += qty;
   else cart.push({ id: product.id, name: product.name, price: product.price, images: product.images, size, color, qty });
-  saveCart(); renderCart(); toast(`${product.name} added to bag`);
+  saveCart();
+  renderCart();
+  toast(`${product.name} added to bag`);
 }
 
 function renderCart() {
@@ -619,9 +535,7 @@ function closeCart() {
 function openDetail(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
-  currentDetail = { product: p, size: p.sizes[0], color: p.colors[0].name, qty: 1,
-    images: p.images && p.images.length ? p.images : [], index: 0 };
-
+  currentDetail = { product: p, size: p.sizes[0], color: p.colors[0].name, qty: 1, images: p.images && p.images.length ? p.images : [], index: 0 };
   const media = document.getElementById('detailMedia');
   const thumbs = document.getElementById('detailThumbs');
   const counter = document.getElementById('imgCounter');
@@ -635,7 +549,6 @@ function openDetail(id) {
   if (thumbs) thumbs.innerHTML = total > 1
     ? currentDetail.images.map((img, i) => `<div class="thumb ${i===0?'active':''}" data-thumb="${i}"><img src="${img}" alt=""></div>`).join('')
     : '';
-
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   set('detailCat', getCat(p.cat).label);
   set('detailName', p.name);
@@ -735,6 +648,10 @@ async function placeOrder(user, formData) {
       phone: formData.phone, address: formData.address,
       city: formData.city, district: formData.district, province: formData.province
     }, { merge: true });
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'purchase', { transaction_id: orderId, value: total, currency: 'PKR',
+        items: cart.map(i => ({ item_id: i.id, item_name: i.name, price: i.price, quantity: i.qty })) });
+    }
     cart = []; saveCart(); renderCart();
     document.getElementById('checkoutModal').classList.remove('show');
     document.body.style.overflow = '';
@@ -885,7 +802,7 @@ function renderProductsTable(list) {
       const snap = await ref.get();
       if (snap.exists) await ref.delete();
       else await ref.set({ hidden: true }, { merge: true });
-      toast('Deleted'); await loadCatalog(); loadProducts();
+      toast('Deleted'); localStorage.removeItem(CACHE_KEY + '_products'); await loadCatalog(); loadProducts();
     } catch (e) { toast('Error'); }
   }));
 }
@@ -933,7 +850,7 @@ function renderCategoriesTable(list) {
       const ref = db.collection('categories').doc(b.dataset.deleteCat);
       const snap = await ref.get();
       if (snap.exists) await ref.delete(); else await ref.set({ hidden: true }, { merge: true });
-      toast('Deleted'); await loadCatalog(); loadCategories();
+      toast('Deleted'); localStorage.removeItem(CACHE_KEY + '_categories'); await loadCatalog(); loadCategories();
     } catch (e) { toast('Error'); }
   }));
 }
@@ -977,6 +894,7 @@ async function saveCategory(e) {
     await db.collection('categories').doc(slug).set({ label, gender, img, desc, hidden: false, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
     toast(editId ? 'Updated' : 'Created');
     document.getElementById('categoryModal').classList.remove('show');
+    localStorage.removeItem(CACHE_KEY + '_categories');
     await loadCatalog(); loadCategories();
   } catch (e) { toast('Error: ' + e.message); }
 }
@@ -1080,24 +998,22 @@ async function saveProduct(e) {
   const featured = document.getElementById('p-featured').checked;
   const stock = Number(document.getElementById('p-stock').value) || 0;
   const lowStock = Number(document.getElementById('p-lowstock').value) || 5;
-
   if (name.length < 2) return toast('Name required');
   if (!gender) return toast('Gender required');
   if (!cat) return toast('Category required');
   if (!price) return toast('Price required');
   if (!document.getElementById('p-img1').value.trim()) return toast('Image 1 required');
-
   const data = {
     name, gender, cat, price, oldPrice, tag, images: parseImages(), sizes, sku,
     colors: colors.length ? colors : [{ name:'Default', hex:'#333333' }],
     desc, fabric, care, inStock, featured, stock, lowStock,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
-
   try {
     if (editId) { await db.collection('products').doc(editId).update(data); toast('Updated'); }
     else { data.createdAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection('products').add(data); toast('Added'); }
     document.getElementById('productModal').classList.remove('show');
+    localStorage.removeItem(CACHE_KEY + '_products');
     await loadCatalog(); loadProducts();
   } catch (e) { toast('Error: ' + e.message); }
 }
@@ -1356,11 +1272,11 @@ const page = document.body.dataset.page;
   if (page === 'profile') loadProfile(user);
 
   if (page === 'admin') {
-    try { await loadProducts(); } catch(e) {}
-    try { await loadCategories(); } catch(e) {}
-    try { await loadBanners(); } catch(e) {}
-    try { await loadOrders(); } catch(e) {}
-    try { await loadUsers(); } catch(e) {}
+    try { await loadProducts(); } catch(e) { console.error(e); }
+    try { await loadCategories(); } catch(e) { console.error(e); }
+    try { await loadBanners(); } catch(e) { console.error(e); }
+    try { await loadOrders(); } catch(e) { console.error(e); }
+    try { await loadUsers(); } catch(e) { console.error(e); }
   }
 })();
 
