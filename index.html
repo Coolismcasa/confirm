@@ -129,33 +129,35 @@
 <div class="banner-slot" data-banner-slot="before-categories" style="display:none"></div>
 
 <!-- SHOP BY GENDER -->
-<section class="section gender-section" id="collections">
-  <div class="container">
-    <div class="sec-head">
-      <div>
-        <p class="eyebrow">Curated Collections</p>
-        <h2>Shop by Gender</h2>
-      </div>
+<section class="section" id="collections" style="padding:70px 0">
+  <div class="container" style="width:min(1240px,92vw);margin:0 auto">
+    <div style="margin-bottom:40px">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:.8rem;letter-spacing:.5em;text-transform:uppercase;color:#8A8A8A;font-style:italic;margin:0 0 12px">Curated Collections</p>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.9rem,4.2vw,3rem);font-weight:600;margin:0;color:#0B1A30">Shop by Gender</h2>
     </div>
-    <div class="gender-tiles">
-      <a href="shop.html?gender=men" class="gender-tile gender-tile-men">
-        <img src="images/banner-men.jpg" alt="Men's Collection" class="gender-tile-img" loading="lazy">
-        <div class="gender-tile-overlay"></div>
-        <div class="gender-tile-content">
-          <span class="gender-eyebrow">For Him</span>
-          <h3>MEN</h3>
-          <span class="gender-cta">Shop Now →</span>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+      <a href="shop.html?gender=men" style="position:relative;display:block;overflow:hidden;border-radius:20px;aspect-ratio:4/5;text-decoration:none">
+        <img src="images/banner-men.jpg" alt="Men" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" loading="lazy">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.2) 55%,transparent 100%);z-index:1"></div>
+        <div style="position:relative;z-index:2;height:100%;padding:36px;display:flex;flex-direction:column;justify-content:flex-end;color:#FFF">
+          <span style="font-family:'Cormorant Garamond',serif;font-size:.78rem;letter-spacing:.35em;text-transform:uppercase;font-style:italic;margin-bottom:10px;opacity:.85">For Him</span>
+          <h3 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;margin:0 0 12px;color:#FFF;letter-spacing:.04em">MEN</h3>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:600;font-style:italic;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:4px;align-self:flex-start">Shop Now →</span>
         </div>
       </a>
-      <a href="shop.html?gender=women" class="gender-tile gender-tile-women">
-        <img src="images/banner-women.jpg" alt="Women's Collection" class="gender-tile-img" loading="lazy">
-        <div class="gender-tile-overlay"></div>
-        <div class="gender-tile-content">
-          <span class="gender-eyebrow">For Her</span>
-          <h3>WOMEN</h3>
-          <span class="gender-cta">Shop Now →</span>
+
+      <a href="shop.html?gender=women" style="position:relative;display:block;overflow:hidden;border-radius:20px;aspect-ratio:4/5;text-decoration:none">
+        <img src="images/banner-women.jpg" alt="Women" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" loading="lazy">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.2) 55%,transparent 100%);z-index:1"></div>
+        <div style="position:relative;z-index:2;height:100%;padding:36px;display:flex;flex-direction:column;justify-content:flex-end;color:#FFF">
+          <span style="font-family:'Cormorant Garamond',serif;font-size:.78rem;letter-spacing:.35em;text-transform:uppercase;font-style:italic;margin-bottom:10px;opacity:.85">For Her</span>
+          <h3 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;margin:0 0 12px;color:#FFF;letter-spacing:.04em">WOMEN</h3>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:600;font-style:italic;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:4px;align-self:flex-start">Shop Now →</span>
         </div>
       </a>
+
     </div>
   </div>
 </section>
