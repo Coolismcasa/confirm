@@ -78,7 +78,38 @@ ul{list-style:none}
 h1,h2,h3{font-family:'Playfair Display',serif;font-weight:600;line-height:1.15;color:var(--ink)}
 h2{font-size:clamp(1.9rem,4.2vw,3.1rem)}
 .section{position:relative;z-index:2;padding:clamp(70px,9vw,120px) 0}
+/* ═══════ HERO BANNER — CENTERED ═══════ */
+#heroSlider,
+.hero-slider {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
 
+#heroSlider picture,
+.hero-slider picture {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+#heroSlider img,
+.hero-slider img {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+}
 /* ═══════ TOPBAR (Dark Grey) ═══════ */
 .topbar{background:var(--grey-900);overflow:hidden;position:relative;z-index:60}
 .marquee{display:flex;width:max-content;animation:slide 34s linear infinite}
