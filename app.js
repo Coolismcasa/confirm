@@ -15,7 +15,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 /* ═══════ HERO BANNER FILES ═══════ */
-const PC_BANNER = 'banner11.jpg';
+const PC_BANNER = 'Banner1.jpg';
 const MOBILE_BANNER = 'banner111.jpg';
 
 /* ═══════ STATE ═══════ */
@@ -423,14 +423,12 @@ async function renderBannerSlots() {
     const mobileUrl = buildImageUrl(MOBILE_BANNER);
 
     heroSlider.innerHTML = `
-      <picture>
-        <source media="(max-width: 768px)" srcset="${mobileUrl}">
-        <img src="${pcUrl}" alt="Coolism Collection" fetchpriority="high" loading="eager"
-             style="width:100%;height:auto;display:block;object-fit:cover;object-position:center;background:#1A1A1A;"
-             onerror="this.style.background='linear-gradient(135deg,#1A1A1A,#2A2A2A)';this.style.minHeight='400px'">
-      </picture>
-    `;
-  }
+  <picture>
+    <source media="(max-width: 768px)" srcset="${mobileUrl}">
+    <img src="${pcUrl}" alt="Coolism Collection" fetchpriority="high" loading="eager"
+         style="width:100%;height:auto;aspect-ratio:21/9;display:block;object-fit:cover;object-position:center 40%;">
+  </picture>
+`;
 
   let banners = [];
   try {
