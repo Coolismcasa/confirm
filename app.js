@@ -281,6 +281,7 @@ function renderShopPage() {
   shopGender = getUrlParam('gender');
   shopCat = getUrlParam('cat');
 
+  // ═══ Gender switch (top) ═══
   const genderSwitch = document.getElementById('genderSwitch');
   if (genderSwitch) {
     genderSwitch.innerHTML = `
@@ -290,24 +291,55 @@ function renderShopPage() {
     `;
   }
 
+  // ═══ Page title ═══
   const title = document.getElementById('shopTitle');
   const sub = document.getElementById('shopSubtitle');
   const eyebrow = document.getElementById('shopEyebrow');
   const heading = document.getElementById('shopHeading');
+  const catHeading = document.getElementById('catHeading');
+
   if (shopGender === 'men') {
     if (title) title.textContent = "Men's Collection";
-    if (sub) sub.textContent = "Sharp tailoring, premium fabrics.";
+    if (sub) sub.textContent = "Sharp tailoring, premium fabrics, built for daily wear.";
     if (eyebrow) eyebrow.textContent = 'For Him';
+    if (catHeading) catHeading.textContent = "Shop Men's Categories";
   } else if (shopGender === 'women') {
     if (title) title.textContent = "Women's Collection";
-    if (sub) sub.textContent = "Fluid silhouettes and essentials.";
+    if (sub) sub.textContent = "Fluid silhouettes and elevated essentials.";
     if (eyebrow) eyebrow.textContent = 'For Her';
+    if (catHeading) catHeading.textContent = "Shop Women's Categories";
   } else {
     if (title) title.textContent = "All Collections";
-    if (sub) sub.textContent = "Everything Coolism offers.";
+    if (sub) sub.textContent = "Everything Coolism has to offer.";
     if (eyebrow) eyebrow.textContent = 'Browse All';
+    if (catHeading) catHeading.textContent = "Shop by Category";
   }
 
+  // ═══ Category tiles grid ═══
+  const shopCatGrid = document.getElementById('shopCatGrid');
+  if (shopCatGrid) {
+    const catKeys = Object.keys(CATEGORIES).filter(k => {
+      const g = CATEGORIES[k].gender || 'men';
+      if (!shopGender) return true;
+      return g === shopGender;
+    });
+
+    if (!catKeys.length) {
+      shopCatGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>No categories yet.</p></div>`;
+    } else {
+      shopCatGrid.innerHTML = catKeys.map(k => {
+        const c = CATEGORIES[k];
+        return `<a href="shop.html?${shopGender ? 'gender='+shopGender+'&' : ''}cat=${k}" class="mini-cat-tile">
+          <div class="mini-cat-img">
+            <img src="${c.img}" alt="${c.label}" loading="lazy" onerror="this.style.background='#E8E8E8';this.style.display='block'">
+          </div>
+          <h4>${c.label}</h4>
+        </a>`;
+      }).join('');
+    }
+  }
+
+  // ═══ Filter chips ═══
   const filters = document.getElementById('filters');
   if (filters) {
     const catKeys = Object.keys(CATEGORIES).filter(k => {
@@ -319,18 +351,31 @@ function renderShopPage() {
       catKeys.map(k => `<button class="chip ${shopCat===k?'active':''}" data-filter="${k}">${CATEGORIES[k].label}</button>`).join('');
   }
 
+  // ═══ Products ═══
   let list = PRODUCTS;
   if (shopGender) list = list.filter(p => p.gender === shopGender);
   if (shopCat) list = list.filter(p => p.cat === shopCat);
   list = sortProducts(list, currentSort);
 
-  if (heading) heading.textContent = shopCat ? getCat(shopCat).label : (shopGender ? `${shopGender==='men'?'Men':'Women'}'s Products` : 'All Products');
+  if (heading) {
+    heading.textContent = shopCat
+      ? getCat(shopCat).label
+      : (shopGender ? `${shopGender==='men'?'Men':'Women'}'s Products` : 'All Products');
+  }
 
   const grid = document.getElementById('productGrid');
   if (grid) {
-    grid.innerHTML = list.length ? list.map(productCardHTML).join('') : `<div class="empty-state"><h3>No products found</h3></div>`;
+    if (!list.length) {
+      grid.innerHTML = `<div class="empty-state">
+        <h3>No products found</h3>
+        <p>Try a different category.</p>
+      </div>`;
+    } else {
+      grid.innerHTML = list.map(productCardHTML).join('');
+    }
   }
 
+  // ═══ Filter chip clicks ═══
   if (filters) filters.addEventListener('click', e => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
