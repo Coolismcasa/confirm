@@ -1396,7 +1396,7 @@ img[src]{ animation: none; }
   width: 100%;
   overflow: hidden;
   background: transparent;
-  /* NO min-height — image defines height */
+  display: block;
 }
 
 .hero-track {
@@ -1452,9 +1452,6 @@ img[src]{ animation: none; }
 .hero-arrow-prev { left: 24px; }
 .hero-arrow-next { right: 24px; }
 
-@media (hover: none) { .hero-arrow { opacity: 1; } }
-@media (hover: hover) { .hero-arrow { opacity: 0.7; } .hero-slider:hover .hero-arrow { opacity: 1; } }
-
 @media (max-width: 620px) {
   .hero-arrow { width: 40px; height: 40px; }
   .hero-arrow svg { width: 18px; height: 18px; }
@@ -1483,7 +1480,6 @@ img[src]{ animation: none; }
   transition: all 0.3s ease;
 }
 .hero-dot.active { background: #FFF; width: 28px; border-radius: 99px; }
-
 /* ═══════ CTA BUTTON ═══════ */
 .hero-cta-btn {
   position: absolute;
