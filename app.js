@@ -15,7 +15,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 /* ═══════ HERO BANNER FILES ═══════ */
-const PC_BANNER = 'banner11.jpg';
+const PC_BANNER = 'Banner1.jpg';
 const MOBILE_BANNER = 'banner111.jpg';
 
 /* ═══════ STATE ═══════ */
