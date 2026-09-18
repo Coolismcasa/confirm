@@ -2186,3 +2186,64 @@ img[src]{ animation: none; }
   .mini-cats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .mini-cat-tile h4 { font-size: .72rem; letter-spacing: .1em; }
 }
+/* ═══════ HERO SLIDER — MOBILE FIX ═══════ */
+@media (max-width: 768px) {
+  #heroSlider {
+    min-height: auto;
+  }
+  #heroImg {
+    aspect-ratio: 4 / 5 !important;
+    object-fit: cover !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 400px !important;
+  }
+}
+/* ═══════ BANNER SLOTS — SHOW FULL IMAGE ═══════ */
+.banner-slot .site-banner-img,
+.banner-slot picture,
+.banner-slot .site-banner-link {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  object-fit: cover !important;
+  aspect-ratio: auto !important;
+  max-height: none !important;
+}
+/* ═══════ HERO — NO BLACK SPACE ═══════ */
+#heroSlider {
+  background: transparent !important;
+  min-height: 0 !important;
+}
+/* ═══════ HERO SLIDER — MOBILE FIX ═══════ */
+@media (max-width: 768px) {
+  #heroSlider {
+    min-height: auto;
+  }
+  #heroImg {
+    aspect-ratio: 4 / 5 !important;
+    object-fit: cover !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 400px !important;
+  }
+}
+
+/* ═══════ HERO — NO BLACK SPACE ═══════ */
+#heroSlider {
+  background: transparent !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* ═══════ BANNER SLOTS — SHOW FULL IMAGE ═══════ */
+.banner-slot .site-banner-img,
+.banner-slot picture,
+.banner-slot .site-banner-link {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  object-fit: cover !important;
+  aspect-ratio: auto !important;
+  max-height: none !important;
+}
