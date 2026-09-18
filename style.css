@@ -2346,3 +2346,30 @@ img[src]{ animation: none; }
 #heroImg {
   object-position: top center !important;
 }
+/* ═══════ HERO IMAGE — SHOW FULL (PORTRAIT) ═══════ */
+
+/* Desktop — use portrait ratio, not wide */
+#heroImg,
+.hero-slide-img,
+.site-banner-img {
+  object-fit: cover !important;
+  object-position: top center !important;
+}
+
+#heroSlider {
+  aspect-ratio: 4 / 5 !important;
+  max-height: 750px !important;
+  overflow: hidden !important;
+}
+
+/* Mobile — same portrait ratio */
+@media (max-width: 768px) {
+  #heroSlider {
+    aspect-ratio: 4 / 5 !important;
+    max-height: none !important;
+  }
+  #heroImg {
+    aspect-ratio: 4 / 5 !important;
+    object-position: top center !important;
+  }
+}
