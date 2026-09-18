@@ -415,14 +415,10 @@ function renderShopPage() {
   });
 }
 
+
 /* ═══════ BANNERS ═══════ */
 async function renderBannerSlots() {
   const heroSlider = document.getElementById('heroSlider');
-  if (heroSlider) {
-    const pcUrl = buildImageUrl(PC_BANNER);
-    const mobileUrl = buildImageUrl(MOBILE_BANNER);
-
-      const heroSlider = document.getElementById('heroSlider');
   if (heroSlider) {
     const pcUrl = buildImageUrl(PC_BANNER);
     const mobileUrl = buildImageUrl(MOBILE_BANNER);
