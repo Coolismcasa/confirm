@@ -174,46 +174,78 @@ async function saveUserToFirestore(user) {
 
 /* ═══════ LOAD DATA ═══════ */
 async function loadCatalog() {
-    const cachedProducts = getCache('products');
-    const cachedCats = getCache('categories');
-    const loaded = {}; const hidden = [];
+  // Check cache first (5 min)
+  const cachedProducts = getCache('products');
+  const cachedCats = getCache('categories');
+  if (cachedProducts && cachedCats && cachedProducts.length) {
+    PRODUCTS = cachedProducts;
+    CATEGORIES = cachedCats;
+    return;
+  }
+
+  // Load categories
+  try {
+    const snap = await db.collection('categories').get();
+    const loaded = {};
+    const hidden = [];
     snap.forEach(doc => {
       const d = doc.data();
       if (d.hidden) { hidden.push(doc.id); return; }
-      loaded[doc.id] = { label: d.label || doc.id, gender: d.gender || 'men', desc: d.desc || '', img: d.img || '' };
+      loaded[doc.id] = {
+        label: d.label || doc.id,
+        gender: d.gender || 'men',
+        desc: d.desc || d.sub || '',
+        img: d.img || ''
+      };
     });
     CATEGORIES = { ...FALLBACK_CATS, ...loaded };
-    hidden.forEach(id => delete CATEGORIES[id]);
-  } catch (e) { CATEGORIES = { ...FALLBACK_CATS }; }
+    hidden.forEach(id => { delete CATEGORIES[id]; });
+  } catch (e) {
+    CATEGORIES = { ...FALLBACK_CATS };
+  }
 
+  // Load products
   try {
     const snap = await db.collection('products').get();
-    const fsProducts = []; const hiddenIds = [];
+    const fsProducts = [];
+    const hiddenIds = [];
     snap.forEach(doc => {
       const d = doc.data();
       if (d.hidden) { hiddenIds.push(doc.id); return; }
       fsProducts.push({
-        id: doc.id, name: d.name||'', gender: d.gender||'men', cat: d.cat||'shirts',
-        price: Number(d.price)||0, oldPrice: d.oldPrice ? Number(d.oldPrice) : null, tag: d.tag||null,
+        id: doc.id,
+        name: d.name || '',
+        gender: d.gender || 'men',
+        cat: d.cat || 'shirts',
+        price: Number(d.price) || 0,
+        oldPrice: d.oldPrice ? Number(d.oldPrice) : null,
+        tag: d.tag || null,
         images: Array.isArray(d.images) ? d.images : (d.img ? [d.img] : []),
-        desc: d.desc||'', sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
+        desc: d.desc || '',
+        sizes: Array.isArray(d.sizes) ? d.sizes : ['S','M','L','XL'],
         colors: Array.isArray(d.colors) ? d.colors : [{ name:'Navy', hex:'#0B1A30' }],
-        fabric: d.fabric||'', care: d.care||'', sku: d.sku||'',
-        inStock: d.inStock !== false, featured: d.featured !== false,
-        stock: d.stock ?? 50, lowStock: d.lowStock ?? 5, _ts: d.createdAt?.seconds || 0
+        fabric: d.fabric || '',
+        care: d.care || '',
+        sku: d.sku || '',
+        inStock: d.inStock !== false,
+        featured: d.featured !== false,
+        stock: d.stock ?? 50,
+        lowStock: d.lowStock ?? 5,
+        _ts: d.createdAt?.seconds || 0
       });
     });
     const byId = {};
-    fsProducts.forEach(p => byId[p.id] = p);
+    fsProducts.forEach(p => { byId[p.id] = p; });
     const fallbacksKept = FALLBACK_PRODUCTS.filter(p => !byId[p.id] && !hiddenIds.includes(p.id));
     PRODUCTS = [...fsProducts, ...fallbacksKept];
   } catch (e) {
     PRODUCTS = [...FALLBACK_PRODUCTS];
   }
+
+  // Save to cache
+  setCache('products', PRODUCTS);
+  setCache('categories', CATEGORIES);
 }
-
-const getCat = k => CATEGORIES[k] || FALLBACK_CATS[k] || { label:k, gender:'men', desc:'', img:'' };
-
 /* ═══════ VISUALS ═══════ */
 function productVisual(p, cls = 'card-placeholder') {
   const img = (p.images && p.images[0]) || p.img;
