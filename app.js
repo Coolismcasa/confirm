@@ -14,6 +14,10 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+/* ═══════ HERO BANNER FILES ═══════ */
+const PC_BANNER = 'banner11.jpg';
+const MOBILE_BANNER = 'banner111.jpg';
+
 /* ═══════ STATE ═══════ */
 let PRODUCTS = [];
 let CATEGORIES = {};
@@ -413,10 +417,25 @@ function renderShopPage() {
 
 /* ═══════ BANNERS ═══════ */
 async function renderBannerSlots() {
+  const heroSlider = document.getElementById('heroSlider');
+  if (heroSlider) {
+    const pcUrl = buildImageUrl(PC_BANNER);
+    const mobileUrl = buildImageUrl(MOBILE_BANNER);
+
+    heroSlider.innerHTML = `
+      <picture>
+        <source media="(max-width: 768px)" srcset="${mobileUrl}">
+        <img src="${pcUrl}" alt="Coolism Collection" fetchpriority="high" loading="eager"
+             style="width:100%;height:auto;display:block;object-fit:cover;object-position:center;background:#1A1A1A;"
+             onerror="this.style.background='linear-gradient(135deg,#1A1A1A,#2A2A2A)';this.style.minHeight='400px'">
+      </picture>
+    `;
+  }
+
   let banners = [];
   try {
     const snap = await db.collection('banners').orderBy('order', 'asc').get();
-    banners = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(b => b.active !== false);
+    banners = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(b => b.active !== false && b.position !== 'hero');
   } catch (e) { return; }
 
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
@@ -425,42 +444,6 @@ async function renderBannerSlots() {
     if (!isMobile && b.showOnPc === false) return false;
     return true;
   });
-
-  const heroSlider = document.getElementById('heroSlider');
-  if (heroSlider) {
-    const heroBanners = banners.filter(b => b.position === 'hero');
-    if (heroBanners.length) {
-      const images = heroBanners.map(b => b.image);
-      let current = 0;
-
-      heroSlider.style.position = 'relative';
-      heroSlider.style.overflow = 'hidden';
-      heroSlider.innerHTML = `
-        <img id="heroImg" src="${images[0]}" style="width:100%;display:block;object-fit:cover" alt="Coolism" fetchpriority="high">
-        <button id="heroPrevBtn" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(20,20,20,0.7);border:1px solid rgba(255,255,255,0.3);color:#FFF;font-size:22px;cursor:pointer;display:grid;place-items:center;z-index:10">‹</button>
-        <button id="heroNextBtn" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(20,20,20,0.7);border:1px solid rgba(255,255,255,0.3);color:#FFF;font-size:22px;cursor:pointer;display:grid;place-items:center;z-index:10">›</button>
-        <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10">
-          ${images.map((_, i) => `<button class="heroDot" data-i="${i}" style="width:${i===0?'28px':'8px'};height:8px;border-radius:99px;background:${i===0?'#FFF':'rgba(255,255,255,0.5)'};border:1px solid rgba(255,255,255,0.8);cursor:pointer;padding:0"></button>`).join('')}
-        </div>
-      `;
-
-      function showSlide(i) {
-        current = i;
-        const img = document.getElementById('heroImg');
-        if (img) img.src = images[current];
-        document.querySelectorAll('.heroDot').forEach((d, idx) => {
-          d.style.background = idx === current ? '#FFF' : 'rgba(255,255,255,0.5)';
-          d.style.width = idx === current ? '28px' : '8px';
-        });
-      }
-      document.getElementById('heroPrevBtn').onclick = () => showSlide((current - 1 + images.length) % images.length);
-      document.getElementById('heroNextBtn').onclick = () => showSlide((current + 1) % images.length);
-      document.querySelectorAll('.heroDot').forEach(d => {
-        d.onclick = () => showSlide(Number(d.dataset.i));
-      });
-      if (images.length > 1) setInterval(() => showSlide((current + 1) % images.length), 4000);
-    }
-  }
 
   const SLOTS = ['before-categories','after-categories','home-before-men','home-after-men','home-before-women','home-after-women','after-products','before-footer','shop-men-top','shop-men-mid','shop-women-top','shop-women-mid'];
   SLOTS.forEach(pos => {
