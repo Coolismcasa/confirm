@@ -1652,7 +1652,109 @@ document.addEventListener('keydown', e => {
     document.body.style.overflow = '';
   }
 });
-/* ═══════════════════════════════════════════════════════════
-   HIGH IMPACT DESIGN UPGRADES
-   ═══════════════════════════════════════════════════════════ */
 
+
+/* ─────── 3. PARALLAX ─────── */
+(function initParallax() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(max-width: 768px)').matches) return;
+
+  const elements = document.querySelectorAll('[data-parallax]');
+  if (!elements.length) return;
+
+  let ticking = false;
+
+  function update() {
+    const scrollY = window.pageYOffset;
+    elements.forEach(el => {
+      const speed = parseFloat(el.dataset.parallax) || 0.3;
+      const rect = el.getBoundingClientRect();
+      const offset = (rect.top + scrollY) - scrollY;
+      const yPos = -(scrollY - offset) * speed;
+      el.style.transform = `translate3d(0, ${yPos}px, 0)`;
+    });
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(update);
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+
+/* ─────── 4. NUMBER COUNTERS ─────── */
+function animateCounter(el, target, duration = 2000) {
+  const start = 0;
+  const startTime = performance.now();
+  const isCurrency = el.dataset.prefix === 'Rs ';
+
+  function tick(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = Math.floor(start + (target - start) * eased);
+
+    el.textContent = isCurrency
+      ? 'Rs ' + value.toLocaleString('en-PK')
+      : value.toLocaleString('en-PK');
+
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = isCurrency
+      ? 'Rs ' + target.toLocaleString('en-PK')
+      : target.toLocaleString('en-PK');
+  }
+  requestAnimationFrame(tick);
+}
+
+(function initCounters() {
+  const counters = document.querySelectorAll('[data-count]');
+  if (!counters.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseFloat(el.dataset.count) || 0;
+        animateCounter(el, target);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  counters.forEach(c => observer.observe(c));
+})();
+
+/* ─────── 5. SKELETON LOADING ─────── */
+function showSkeleton(container, count = 4) {
+  if (!container) return;
+  const skeletonHTML = Array(count).fill(0).map(() => `
+    <div class="skeleton-card">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line med"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+  `).join('');
+  container.innerHTML = skeletonHTML;
+}
+
+/* ─────── 6. TEXT REVEAL HELPER ─────── */
+function splitTextIntoSpans(selector) {
+  document.querySelectorAll(selector).forEach(el => {
+    if (el.querySelector('.text-reveal-words') || el.querySelector('.text-reveal')) return;
+    const text = el.textContent.trim();
+    const words = text.split(/\s+/);
+    el.innerHTML = `<span class="text-reveal-words">${
+      words.map(w => `<span><span>${w}</span></span>`).join(' ')
+    }</span>`;
+  });
+}
+
+/* Auto-apply to headings */
+window.addEventListener('load', () => {
+  splitTextIntoSpans('.sec-head h2, #featured-men h2, #featured-women h2');
+});
