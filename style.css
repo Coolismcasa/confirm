@@ -2414,3 +2414,55 @@ img[src]{ animation: none; }
   mix-blend-mode: overlay;
   opacity: .4;
 }
+/* ═══════ KINETIC HERO REVEAL ═══════ */
+.hero-slider {
+  position: relative;
+  overflow: hidden;
+  background: #0F0F0F;
+}
+
+.hero-slider::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #0F0F0F;
+  z-index: 5;
+  transform-origin: top;
+  animation: curtainUp 1.4s cubic-bezier(.77,0,.18,1) forwards;
+}
+
+@keyframes curtainUp {
+  0%   { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+
+#heroImg {
+  transform: scale(1.12);
+  animation: heroZoom 2.4s cubic-bezier(.22,.61,.36,1) 0.2s forwards;
+}
+
+@keyframes heroZoom {
+  to { transform: scale(1); }
+}
+
+/* Hero text — if you add it later */
+.hero-caption {
+  position: absolute;
+  bottom: 12%;
+  left: 6%;
+  z-index: 10;
+  color: #fff;
+}
+.hero-caption span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: wordUp 0.9s cubic-bezier(.22,.61,.36,1) forwards;
+}
+.hero-caption span:nth-child(1) { animation-delay: 0.9s; }
+.hero-caption span:nth-child(2) { animation-delay: 1.05s; }
+.hero-caption span:nth-child(3) { animation-delay: 1.2s; }
+
+@keyframes wordUp {
+  to { opacity: 1; transform: translateY(0); }
+}
