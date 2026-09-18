@@ -2292,3 +2292,30 @@ img[src]{ animation: none; }
     min-height: 0 !important;
   }
 }
+/* Desktop — match tile height */
+#heroSlider {
+  height: 520px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+#heroImg {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* Mobile — match tile height */
+@media (max-width: 768px) {
+  #heroSlider {
+    height: 380px !important;
+    min-height: 0 !important;
+  }
+  #heroImg {
+    height: 380px !important;
+    min-height: 0 !important;
+    object-fit: cover !important;
+  }
+}
