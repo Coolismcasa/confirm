@@ -11,6 +11,28 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+/* ═══════ FIRESTORE CACHE (5 min) ═══════ */
+const CACHE_TTL = 5 * 60 * 1000;
+const CACHE_KEY = 'coolism_cache_v1';
+
+function getCache(key) {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY + '_' + key);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (Date.now() - obj.time > CACHE_TTL) {
+      localStorage.removeItem(CACHE_KEY + '_' + key);
+      return null;
+    }
+    return obj.data;
+  } catch (e) { return null; }
+}
+
+function setCache(key, data) {
+  try {
+    localStorage.setItem(CACHE_KEY + '_' + key, JSON.stringify({ time: Date.now(), data }));
+  } catch (e) {}
+}
 
 let PRODUCTS = [];
 let CATEGORIES = {};
@@ -152,8 +174,8 @@ async function saveUserToFirestore(user) {
 
 /* ═══════ LOAD DATA ═══════ */
 async function loadCatalog() {
-  try {
-    const snap = await db.collection('categories').get();
+    const cachedProducts = getCache('products');
+    const cachedCats = getCache('categories');
     const loaded = {}; const hidden = [];
     snap.forEach(doc => {
       const d = doc.data();
