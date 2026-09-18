@@ -2427,30 +2427,36 @@ section.hero-slider {
   height: auto !important;
   object-fit: cover !important;
 }
-/* ═══════ HERO FULL WIDTH — KILL PADDING ═══════ */
+/* ═══════ HERO FULL WIDTH ═══════ */
 .hero-slider,
 #heroSlider {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  margin-left: calc(-50vw + 50%) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
   padding: 0 !important;
   background: transparent !important;
   overflow: hidden !important;
+  display: block !important;
 }
 
 .hero-slider picture,
+#heroSlider picture {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .hero-slider img,
-#heroSlider picture,
 #heroSlider img {
   display: block !important;
-  width: 100vw !important;
-  max-width: 100vw !important;
+  width: 100% !important;
+  height: auto !important;
   margin: 0 !important;
   padding: 0 !important;
   object-fit: cover !important;
 }
 
-/* Kill body horizontal scroll */
 body {
   overflow-x: hidden !important;
 }
