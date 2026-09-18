@@ -2268,3 +2268,27 @@ img[src]{ animation: none; }
 .banner-slot[data-banner-slot="before-categories"] + #collections {
   padding-top: 30px !important;
 }
+/* ═══════ MOBILE HERO — MATCH TILE SIZE ═══════ */
+@media (max-width: 768px) {
+  #heroSlider {
+    background: transparent !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  #heroImg {
+    aspect-ratio: 4 / 5 !important;
+    object-fit: cover !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    display: block !important;
+    background: transparent !important;
+  }
+  .hero-slider {
+    background: transparent !important;
+    min-height: 0 !important;
+  }
+}
